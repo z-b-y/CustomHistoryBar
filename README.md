@@ -52,11 +52,11 @@ type: custom:custom-history-bar
 entity: sensor.netatmo_loznice_index_zdravi
 hours_to_show: 24
 state_colors:
-  healthy: "#2e7d32"
-  fine: "#7cb342"
-  fair: "#f9a825"
-  poor: "#ef6c00"
-  unhealthy: "#c62828"
+  healthy: "#84a5d4"
+  fine: "#41c49d"
+  fair: "#f8e71e"
+  poor: "#fdc46f"
+  unhealthy: "#ff6669"
 ```
 
 Klíče v `state_colors` musí odpovídat hodnotě `state`, nikoli přeloženému atributu `translated`. Pro Netatmo tedy použijte `healthy`, i když Home Assistant stav zobrazuje jako „V pořádku“.
@@ -70,11 +70,11 @@ name: Index zdraví v ložnici
 hours_to_show: 24
 refresh_interval: 60
 state_colors:
-  healthy: "#2e7d32"
-  fine: "#7cb342"
-  fair: "#f9a825"
-  poor: "#ef6c00"
-  unhealthy: "#c62828"
+  healthy: "#84a5d4"
+  fine: "#41c49d"
+  fair: "#f8e71e"
+  poor: "#fdc46f"
+  unhealthy: "#ff6669"
   unknown: "#9e9e9e"
   unavailable: "#616161"
 state_labels:

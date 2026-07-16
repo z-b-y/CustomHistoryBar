@@ -2,11 +2,11 @@ var k = Object.defineProperty;
 var C = (i, o, t) => o in i ? k(i, o, { enumerable: !0, configurable: !0, writable: !0, value: t }) : i[o] = t;
 var u = (i, o, t) => C(i, typeof o != "symbol" ? o + "" : o, t);
 const $ = {
-  healthy: "#2e7d32",
-  fine: "#7cb342",
-  fair: "#f9a825",
-  poor: "#ef6c00",
-  unhealthy: "#c62828",
+  healthy: "#84a5d4",
+  fine: "#41c49d",
+  fair: "#f8e71e",
+  poor: "#fdc46f",
+  unhealthy: "#ff6669",
   unknown: "#9e9e9e",
   unavailable: "#616161"
 }, L = [
@@ -989,6 +989,6 @@ window.customCards.some((i) => i.type === m) || window.customCards.push({
 });
 console.info(
   "%c CUSTOM-HISTORY-BAR %c 0.1.0 ",
-  "color: white; background: #2e7d32; font-weight: 700;",
-  "color: #2e7d32; background: white; font-weight: 700;"
+  "color: white; background: #84a5d4; font-weight: 700;",
+  "color: #84a5d4; background: white; font-weight: 700;"
 );

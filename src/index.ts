@@ -35,6 +35,6 @@ if (!window.customCards.some((card) => card.type === CARD_TAG)) {
 
 console.info(
   "%c CUSTOM-HISTORY-BAR %c 0.1.0 ",
-  "color: white; background: #2e7d32; font-weight: 700;",
-  "color: #2e7d32; background: white; font-weight: 700;",
+  "color: white; background: #84a5d4; font-weight: 700;",
+  "color: #84a5d4; background: white; font-weight: 700;",
 );

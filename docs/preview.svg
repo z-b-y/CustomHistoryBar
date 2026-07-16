@@ -9,11 +9,11 @@
     <rect x="58" y="87" width="884" height="38" rx="5"/>
   </clipPath>
   <g clip-path="url(#bar-clip)">
-    <rect x="58" y="87" width="205" height="38" fill="#2e7d32"/>
-    <rect x="263" y="87" width="195" height="38" fill="#7cb342"/>
-    <rect x="458" y="87" width="180" height="38" fill="#f9a825"/>
-    <rect x="638" y="87" width="160" height="38" fill="#ef6c00"/>
-    <rect x="798" y="87" width="144" height="38" fill="#2e7d32"/>
+    <rect x="58" y="87" width="205" height="38" fill="#84a5d4"/>
+    <rect x="263" y="87" width="195" height="38" fill="#41c49d"/>
+    <rect x="458" y="87" width="180" height="38" fill="#f8e71e"/>
+    <rect x="638" y="87" width="160" height="38" fill="#fdc46f"/>
+    <rect x="798" y="87" width="144" height="38" fill="#84a5d4"/>
   </g>
   <g fill="#ffffff" font-family="Arial, sans-serif" font-size="14" font-weight="600">
     <text x="68" y="112">V pořádku</text>
@@ -30,10 +30,10 @@
     <text x="942" y="146" text-anchor="end">15:00</text>
   </g>
   <g font-family="Arial, sans-serif" font-size="13" fill="#b5b5b5">
-    <rect x="58" y="174" width="13" height="13" rx="2" fill="#2e7d32"/><text x="78" y="185">V pořádku</text>
-    <rect x="175" y="174" width="13" height="13" rx="2" fill="#7cb342"/><text x="195" y="185">Jemné</text>
-    <rect x="275" y="174" width="13" height="13" rx="2" fill="#f9a825"/><text x="295" y="185">Přijatelné</text>
-    <rect x="397" y="174" width="13" height="13" rx="2" fill="#ef6c00"/><text x="417" y="185">Špatné</text>
-    <rect x="504" y="174" width="13" height="13" rx="2" fill="#c62828"/><text x="524" y="185">Nezdravé</text>
+    <rect x="58" y="174" width="13" height="13" rx="2" fill="#84a5d4"/><text x="78" y="185">V pořádku</text>
+    <rect x="175" y="174" width="13" height="13" rx="2" fill="#41c49d"/><text x="195" y="185">Jemné</text>
+    <rect x="275" y="174" width="13" height="13" rx="2" fill="#f8e71e"/><text x="295" y="185">Přijatelné</text>
+    <rect x="397" y="174" width="13" height="13" rx="2" fill="#fdc46f"/><text x="417" y="185">Špatné</text>
+    <rect x="504" y="174" width="13" height="13" rx="2" fill="#ff6669"/><text x="524" y="185">Nezdravé</text>
   </g>
 </svg>

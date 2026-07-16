@@ -4,11 +4,11 @@ import type {
 } from "./types";
 
 export const DEFAULT_STATE_COLORS: Readonly<Record<string, string>> = {
-  healthy: "#2e7d32",
-  fine: "#7cb342",
-  fair: "#f9a825",
-  poor: "#ef6c00",
-  unhealthy: "#c62828",
+  healthy: "#84a5d4",
+  fine: "#41c49d",
+  fair: "#f8e71e",
+  poor: "#fdc46f",
+  unhealthy: "#ff6669",
   unknown: "#9e9e9e",
   unavailable: "#616161",
 };
