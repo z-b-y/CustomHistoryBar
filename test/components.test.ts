@@ -82,6 +82,31 @@ describe("CustomHistoryBar", () => {
 
     expect(callWS).toHaveBeenCalledTimes(2);
   });
+
+  it("hides only the configured header parts", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      hass: HomeAssistant;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    card.setConfig({
+      entity: entityId,
+      show_name: false,
+      show_current_state: true,
+    });
+    card.hass = createHass();
+    document.body.append(card);
+
+    expect(card.shadowRoot?.querySelector(".title")).toBeNull();
+    expect(card.shadowRoot?.querySelector(".header.state-only")).not.toBeNull();
+    expect(card.shadowRoot?.querySelector(".current-state")).not.toBeNull();
+
+    card.setConfig({
+      entity: entityId,
+      show_name: false,
+      show_current_state: false,
+    });
+    expect(card.shadowRoot?.querySelector(".header")).toBeNull();
+  });
 });
 
 describe("CustomHistoryBarEditor", () => {
@@ -145,6 +170,31 @@ describe("CustomHistoryBarEditor", () => {
     rerenderedInput!.value = "9999";
     rerenderedInput!.dispatchEvent(new Event("change", { bubbles: true }));
     expect(emitted[emitted.length - 1]).toMatchObject({ hours_to_show: 720 });
+  });
+
+  it("emits the entity-name visibility setting", () => {
+    const editor = document.createElement(
+      "custom-history-bar-editor",
+    ) as HTMLElement & {
+      hass: HomeAssistant;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    editor.setConfig({ entity: entityId });
+    editor.hass = createHass();
+    document.body.append(editor);
+
+    let changedConfig: Record<string, unknown> | undefined;
+    editor.addEventListener("config-changed", (event) => {
+      changedConfig = (event as CustomEvent).detail.config;
+    });
+    const input = editor.shadowRoot?.querySelector<HTMLInputElement>(
+      "#show_name",
+    );
+    expect(input?.checked).toBe(true);
+    input!.checked = false;
+    input!.dispatchEvent(new Event("change", { bubbles: true }));
+
+    expect(changedConfig).toMatchObject({ show_name: false });
   });
 });
 

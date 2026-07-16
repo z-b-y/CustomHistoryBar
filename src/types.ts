@@ -35,6 +35,7 @@ export interface HistoryBarConfig {
   state_labels?: Record<string, string>;
   fallback_color?: string;
   no_data_color?: string;
+  show_name?: boolean;
   show_legend?: boolean;
   show_current_state?: boolean;
   show_timeline?: boolean;
@@ -47,6 +48,7 @@ export interface ResolvedHistoryBarConfig extends HistoryBarConfig {
   state_labels: Record<string, string>;
   fallback_color: string;
   no_data_color: string;
+  show_name: boolean;
   show_legend: boolean;
   show_current_state: boolean;
   show_timeline: boolean;
@@ -70,6 +72,13 @@ export interface TimelineSegment {
   state: string;
   start: number;
   end: number;
+}
+
+export interface TimelineTick {
+  timestamp: number;
+  position: number;
+  label: string;
+  state?: string;
 }
 
 declare global {

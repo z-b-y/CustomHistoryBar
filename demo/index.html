@@ -102,6 +102,12 @@
       const configOutput = document.querySelector("#config-output");
       editor.addEventListener("config-changed", (event) => {
         configOutput.textContent = JSON.stringify(event.detail.config);
+        card.setConfig({
+          ...event.detail.config,
+          name: "Index zdraví v ložnici",
+          show_legend: true,
+        });
+        card.hass = hass;
       });
       editor.setConfig({
         entity: entityId,

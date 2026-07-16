@@ -15,7 +15,14 @@ describe("normalizeConfig", () => {
     expect(result.hours_to_show).toBe(DEFAULT_CONFIG.hours_to_show);
     expect(result.refresh_interval).toBe(DEFAULT_CONFIG.refresh_interval);
     expect(result.state_colors).toEqual({});
+    expect(result.show_name).toBe(true);
     expect(result.show_current_state).toBe(true);
+  });
+
+  it("preserves an explicitly hidden entity name", () => {
+    expect(
+      normalizeConfig({ entity: "sensor.health", show_name: false }).show_name,
+    ).toBe(false);
   });
 
   it("normalizes raw state keys and preserves CSS colors", () => {

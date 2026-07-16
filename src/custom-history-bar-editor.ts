@@ -382,6 +382,7 @@ export class CustomHistoryBarEditor extends HTMLElement {
     }
 
     for (const field of [
+      "show_name",
       "show_legend",
       "show_current_state",
       "show_timeline",
@@ -479,6 +480,7 @@ export class CustomHistoryBarEditor extends HTMLElement {
         </div>
 
         <div class="toggles">
+          <label class="toggle"><input id="show_name" type="checkbox" ${this._config.show_name ?? DEFAULT_CONFIG.show_name ? "checked" : ""}>${escapeHtml(localize(this._hass, "showName"))}</label>
           <label class="toggle"><input id="show_legend" type="checkbox" ${this._config.show_legend ?? DEFAULT_CONFIG.show_legend ? "checked" : ""}>${escapeHtml(localize(this._hass, "showLegend"))}</label>
           <label class="toggle"><input id="show_current_state" type="checkbox" ${this._config.show_current_state ?? DEFAULT_CONFIG.show_current_state ? "checked" : ""}>${escapeHtml(localize(this._hass, "showCurrentState"))}</label>
           <label class="toggle"><input id="show_timeline" type="checkbox" ${this._config.show_timeline ?? DEFAULT_CONFIG.show_timeline ? "checked" : ""}>${escapeHtml(localize(this._hass, "showTimeline"))}</label>

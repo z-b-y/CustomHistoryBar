@@ -18,3 +18,21 @@
 - Produkční build vytvořil samostatný `dist/custom-history-bar.js` bez externích importů.
 - Karta i editor byly vykresleny a vizuálně zkontrolovány v Chromium prohlížeči.
 - HACS manifest, README a workflow pro validaci jsou přítomné.
+
+## Rozšíření časové osy a názvu
+
+- [x] Přidat konfigurační volbu `show_name` s výchozí hodnotou `true`.
+- [x] Doplnit `show_name` do vizuálního editoru a lokalizací.
+- [x] Vytvořit testovatelný výpočet hlavních časových značek po čtyřech hodinách v časové zóně Home Assistantu.
+- [x] Zobrazit méně výrazné značky v okamžicích změn stavů.
+- [x] Doplnit regresní testy konfigurace, komponenty a časové osy včetně přechodu letního času.
+- [x] Aktualizovat README, demo a distribuční build.
+- [x] Spustit kompletní validaci a vizuální kontrolu.
+
+### Kontrola rozšíření
+
+- `show_name` lze ovládat v YAML i vizuálním editoru; výchozí hodnota zachovává dosavadní zobrazení názvu.
+- Hlavní časové značky respektují místní časovou zónu a přechody mezi letním a zimním časem.
+- Vedlejší značky zobrazují pouze skutečné změny mezi navazujícími stavy a nekolidují s hlavními značkami.
+- Prošlo 30 automatických testů ve čtyřech testovacích souborech, TypeScript kontrola i produkční build.
+- Karta, obě řady časových značek a přepínač názvu byly vizuálně ověřeny v Chromium prohlížeči.

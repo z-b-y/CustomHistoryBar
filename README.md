@@ -13,6 +13,8 @@ Barvy se mapují na surové hodnoty stavů (`healthy`, `fine`, …), takže fung
 - vizuální editor karty včetně výběru barvy,
 - výchozí paleta pro všech pět stavů Netatmo Indexu zdraví,
 - volitelná legenda, aktuální stav a časová osa,
+- volitelné zobrazení názvu entity,
+- hlavní časové značky po čtyřech hodinách a jemnější značky změn stavů,
 - podpora libovolné CSS barvy včetně `var(--moje-barva)`,
 - tooltip s intervalem a délkou každého segmentu,
 - respektování časové zóny nastavené v Home Assistantu,
@@ -82,6 +84,7 @@ state_labels:
 fallback_color: "var(--state-inactive-color)"
 no_data_color: "var(--divider-color)"
 show_legend: true
+show_name: true
 show_current_state: true
 show_timeline: true
 ```
@@ -96,9 +99,10 @@ show_timeline: true
 | `state_labels` | překlad Home Assistantu | Volitelné vlastní názvy stavů. |
 | `fallback_color` | `#607d8b` | Barva stavu, který není v mapě. |
 | `no_data_color` | průhledná šedá | Pozadí úseků bez zaznamenané historie. |
+| `show_name` | `true` | Zobrazí název entity nebo vlastní název karty. |
 | `show_legend` | `false` | Zobrazí legendu stavů. |
 | `show_current_state` | `true` | Zobrazí aktuální stav v záhlaví. |
-| `show_timeline` | `true` | Zobrazí časové značky pod pruhem. |
+| `show_timeline` | `true` | Zobrazí hlavní značky po čtyřech hodinách a méně výrazné časy změn stavů. |
 
 ## Historie a Recorder
 

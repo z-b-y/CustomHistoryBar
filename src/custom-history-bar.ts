@@ -12,6 +12,7 @@ import {
   segmentPosition,
 } from "./history";
 import { localize } from "./localize";
+import { buildFourHourTicks, buildStateChangeTicks } from "./timeline";
 import type {
   HassEntity,
   HistoryBarConfig,
@@ -37,6 +38,10 @@ const CARD_STYLE = `
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
+  }
+
+  .header.state-only {
+    justify-content: flex-end;
   }
 
   .title {
@@ -99,25 +104,55 @@ const CARD_STYLE = `
 
   .timeline {
     position: relative;
-    height: 24px;
+    height: 38px;
     margin-top: 4px;
-    color: var(--secondary-text-color);
-    font-size: 11px;
   }
 
-  .tick {
+  .axis-tick {
     position: absolute;
-    top: 0;
     transform: translateX(-50%);
     white-space: nowrap;
   }
 
-  .tick:first-child {
+  .axis-tick.edge-left {
     transform: none;
   }
 
-  .tick:last-child {
+  .axis-tick.edge-right {
     transform: translateX(-100%);
+  }
+
+  .axis-tick::before {
+    position: absolute;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+    background: currentColor;
+    content: "";
+  }
+
+  .major-tick {
+    top: 19px;
+    color: var(--secondary-text-color);
+    font-size: 11px;
+  }
+
+  .major-tick::before {
+    top: -5px;
+    height: 4px;
+    opacity: 0.65;
+  }
+
+  .change-tick {
+    top: 0;
+    color: var(--secondary-text-color);
+    font-size: 9px;
+    opacity: 0.55;
+  }
+
+  .change-tick::before {
+    top: 11px;
+    height: 5px;
   }
 
   .legend {
@@ -504,13 +539,31 @@ export class CustomHistoryBar extends HTMLElement {
       this._windowStart ||
       Date.now() - this._config.hours_to_show * 60 * 60 * 1000;
     const end = this._windowEnd || Date.now();
-    const includeDate = this._config.hours_to_show > 24;
-    const ticks = Array.from({ length: 5 }, (_, index) => {
-      const position = index * 25;
-      const timestamp = start + ((end - start) * position) / 100;
-      return `<span class="tick" style="left:${position}%">${escapeHtml(this._formatTime(timestamp, includeDate))}</span>`;
-    }).join("");
-    return `<div class="timeline" aria-hidden="true">${ticks}</div>`;
+    const timeZone = this._hass?.config.time_zone;
+    const mainTicks = buildFourHourTicks(start, end, timeZone);
+    const changeTicks = buildStateChangeTicks(
+      this._segments,
+      start,
+      end,
+      timeZone,
+      mainTicks,
+    );
+    const alignmentClass = (position: number): string =>
+      position < 3 ? " edge-left" : position > 97 ? " edge-right" : "";
+    const mainMarkup = mainTicks
+      .map(
+        (tick) =>
+          `<span class="axis-tick major-tick${alignmentClass(tick.position)}" style="left:${tick.position.toFixed(4)}%">${escapeHtml(tick.label)}</span>`,
+      )
+      .join("");
+    const changeMarkup = changeTicks
+      .map((tick) => {
+        const stateLabel = tick.state ? this._stateLabel(tick.state) : "";
+        const title = stateLabel ? `${tick.label} · ${stateLabel}` : tick.label;
+        return `<span class="axis-tick change-tick${alignmentClass(tick.position)}" style="left:${tick.position.toFixed(4)}%" title="${escapeAttribute(title)}">${escapeHtml(tick.label)}</span>`;
+      })
+      .join("");
+    return `<div class="timeline" aria-hidden="true">${changeMarkup}${mainMarkup}</div>`;
   }
 
   private _legendMarkup(): string {
@@ -585,6 +638,13 @@ export class CustomHistoryBar extends HTMLElement {
       this._config.show_current_state && entity
         ? `<span class="current-state">${escapeHtml(this._stateLabel(entity.state))}</span>`
         : "";
+    const visibleTitle = this._config.show_name
+      ? `<span class="title">${escapeHtml(title)}</span>`
+      : "";
+    const header =
+      visibleTitle || currentState
+        ? `<div class="header interactive${visibleTitle ? "" : " state-only"}" id="more-info" role="button" tabindex="0">${visibleTitle}${currentState}</div>`
+        : "";
     const noDataColor = this._safeColor(
       this._config.no_data_color,
       DEFAULT_CONFIG.no_data_color,
@@ -594,10 +654,7 @@ export class CustomHistoryBar extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>${CARD_STYLE}</style>
       <ha-card>
-        <div class="header interactive" id="more-info" role="button" tabindex="0">
-          <span class="title">${escapeHtml(title)}</span>
-          ${currentState}
-        </div>
+        ${header}
         <div class="bar interactive" id="history-bar" role="img" tabindex="0" aria-label="${escapeAttribute(barLabel)}" style="background-color:${escapeAttribute(noDataColor)};background-image:repeating-linear-gradient(135deg, transparent 0, transparent 4px, rgba(127,127,127,.12) 4px, rgba(127,127,127,.12) 8px)">
           ${this._segmentsMarkup()}
         </div>

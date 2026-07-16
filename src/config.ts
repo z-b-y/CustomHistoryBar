@@ -28,6 +28,7 @@ export const DEFAULT_CONFIG = {
   refresh_interval: 60,
   fallback_color: "#607d8b",
   no_data_color: "rgba(127, 127, 127, 0.22)",
+  show_name: true,
   show_legend: false,
   show_current_state: true,
   show_timeline: true,
@@ -104,6 +105,7 @@ export function normalizeConfig(
       config.fallback_color?.trim() || DEFAULT_CONFIG.fallback_color,
     no_data_color:
       config.no_data_color?.trim() || DEFAULT_CONFIG.no_data_color,
+    show_name: config.show_name ?? DEFAULT_CONFIG.show_name,
     show_legend: config.show_legend ?? DEFAULT_CONFIG.show_legend,
     show_current_state:
       config.show_current_state ?? DEFAULT_CONFIG.show_current_state,
