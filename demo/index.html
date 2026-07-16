@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom History Bar preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --card-background-color: #242424;
+        --primary-text-color: #f1f1f1;
+        --secondary-text-color: #b5b5b5;
+        --divider-color: #444;
+        --primary-color: #03a9f4;
+        --error-color: #db4437;
+        font-family: Roboto, Arial, sans-serif;
+      }
+
+      body {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 32px 16px;
+        background: #111;
+      }
+
+      custom-history-bar {
+        overflow: hidden;
+        border-radius: 12px;
+        background: var(--card-background-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      }
+
+      .editor-preview {
+        margin-top: 24px;
+        padding: 16px;
+        border-radius: 12px;
+        background: var(--card-background-color);
+      }
+
+      #config-output {
+        display: block;
+        margin-top: 16px;
+        color: var(--secondary-text-color);
+        font: 12px monospace;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <custom-history-bar id="preview"></custom-history-bar>
+    <div class="editor-preview">
+      <custom-history-bar-editor id="editor"></custom-history-bar-editor>
+      <output id="config-output">No configuration change yet</output>
+    </div>
+    <script type="module">
+      import "../dist/custom-history-bar.js";
+
+      const entityId = "sensor.netatmo_bedroom_health_index";
+      const now = Date.now();
+      const hoursAgo = (hours) => (now - hours * 60 * 60 * 1000) / 1000;
+      const labels = {
+        healthy: "V pořádku",
+        fine: "Jemné",
+        fair: "Přijatelné",
+        poor: "Špatné",
+        unhealthy: "Nezdravé",
+      };
+      const entity = {
+        entity_id: entityId,
+        state: "healthy",
+        last_changed: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
+        last_updated: new Date(now).toISOString(),
+        attributes: {
+          friendly_name: "Netatmo ložnice Index zdraví",
+          options: ["healthy", "fine", "fair", "poor", "unhealthy"],
+        },
+      };
+      const hass = {
+        states: { [entityId]: entity },
+        config: { time_zone: "Europe/Prague" },
+        locale: { language: "cs" },
+        formatEntityState: (state) => labels[state.state] ?? state.state,
+        callWS: async () => ({
+          [entityId]: [
+            { s: "healthy", lu: hoursAgo(30) },
+            { s: "fine", lu: hoursAgo(18) },
+            { s: "fair", lu: hoursAgo(12) },
+            { s: "poor", lu: hoursAgo(7) },
+            { s: "healthy", lu: hoursAgo(3) },
+          ],
+        }),
+      };
+      const card = document.querySelector("#preview");
+      card.setConfig({
+        entity: entityId,
+        name: "Index zdraví v ložnici",
+        hours_to_show: 24,
+        show_legend: true,
+      });
+      card.hass = hass;
+      const editor = document.querySelector("#editor");
+      const configOutput = document.querySelector("#config-output");
+      editor.addEventListener("config-changed", (event) => {
+        configOutput.textContent = JSON.stringify(event.detail.config);
+      });
+      editor.setConfig({
+        entity: entityId,
+        hours_to_show: 24,
+      });
+      editor.hass = hass;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+*.log
+.idea/
+.vscode/
+# Soubor vložený pracovním prostředím; není součástí doplňku.
+image.png
