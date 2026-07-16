@@ -36,3 +36,18 @@
 - Vedlejší značky zobrazují pouze skutečné změny mezi navazujícími stavy a nekolidují s hlavními značkami.
 - Prošlo 30 automatických testů ve čtyřech testovacích souborech, TypeScript kontrola i produkční build.
 - Karta, obě řady časových značek a přepínač názvu byly vizuálně ověřeny v Chromium prohlížeči.
+
+## Dynamická výška karty
+
+- [x] Odvodit výšku z reálně zobrazeného záhlaví, časové osy a legendy.
+- [x] Opravit `getCardSize()` pro masonry zobrazení.
+- [x] Opravit `getGridOptions()` pro sections zobrazení.
+- [x] Doplnit regresní testy všech podstatných kombinací viditelnosti.
+- [x] Regenerovat distribuční build a provést vizuální kontrolu.
+
+### Kontrola dynamické výšky
+
+- Masonry velikost používá skutečnou výšku vykreslené karty; před připojením do DOM používá odhad ze zapnutých částí.
+- Sections zobrazení nemá pevný počet řádků, takže respektuje přirozenou výšku i zalomenou legendu.
+- Automatické testy pokrývají všech 16 kombinací názvu, aktuálního stavu, časové osy a legendy.
+- V prohlížeči byla ověřena plná varianta s výškou 161 px a minimální varianta s výškou 62 px.

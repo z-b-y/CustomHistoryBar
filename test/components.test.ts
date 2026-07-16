@@ -3,6 +3,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "../src/index";
+import { estimateCardHeight, masonrySizeForHeight } from "../src/card-size";
+import { normalizeConfig } from "../src/config";
 import type { HassEntity, HomeAssistant } from "../src/types";
 
 const entityId = "sensor.health";
@@ -46,6 +48,69 @@ afterEach(() => {
 });
 
 describe("CustomHistoryBar", () => {
+  it.each([
+    [false, false, false, false, 2],
+    [false, false, false, true, 2],
+    [false, false, true, false, 3],
+    [false, false, true, true, 3],
+    [true, false, false, false, 2],
+    [false, true, false, false, 2],
+    [true, true, false, false, 2],
+    [true, false, false, true, 3],
+    [false, true, false, true, 3],
+    [true, true, false, true, 3],
+    [true, false, true, false, 3],
+    [false, true, true, false, 3],
+    [true, true, true, false, 3],
+    [true, false, true, true, 4],
+    [false, true, true, true, 4],
+    [true, true, true, true, 4],
+  ])(
+    "computes masonry size for name=%s, state=%s, timeline=%s, legend=%s",
+    (showName, showCurrentState, showTimeline, showLegend, expectedSize) => {
+      const config = normalizeConfig({
+        entity: entityId,
+        show_name: showName,
+        show_current_state: showCurrentState,
+        show_timeline: showTimeline,
+        show_legend: showLegend,
+      });
+
+      expect(masonrySizeForHeight(estimateCardHeight(config))).toBe(
+        expectedSize,
+      );
+    },
+  );
+
+  it("uses natural height in sections view to allow wrapped content", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      getGridOptions(): Record<string, number>;
+    };
+
+    expect(card.getGridOptions()).toEqual({ columns: 12, min_columns: 6 });
+  });
+
+  it("prefers the rendered height when it is available", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      getCardSize(): number;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    card.setConfig({
+      entity: entityId,
+      show_name: false,
+      show_current_state: false,
+      show_timeline: false,
+      show_legend: false,
+    });
+    const renderedCard = card.shadowRoot?.querySelector<HTMLElement>("ha-card");
+    Object.defineProperty(renderedCard, "scrollHeight", {
+      configurable: true,
+      value: 151,
+    });
+
+    expect(card.getCardSize()).toBe(4);
+  });
+
   it("keeps only one request in flight and runs one pending refresh", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-07-16T12:00:00.000Z"));

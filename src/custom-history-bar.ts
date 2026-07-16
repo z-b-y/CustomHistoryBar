@@ -11,6 +11,7 @@ import {
   mergeCurrentState,
   segmentPosition,
 } from "./history";
+import { estimateCardHeight, masonrySizeForHeight } from "./card-size";
 import { localize } from "./localize";
 import { buildFourHourTicks, buildStateChangeTicks } from "./timeline";
 import type {
@@ -38,6 +39,7 @@ const CARD_STYLE = `
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
+    line-height: 20px;
   }
 
   .header.state-only {
@@ -162,6 +164,7 @@ const CARD_STYLE = `
     margin-top: 12px;
     color: var(--secondary-text-color);
     font-size: 12px;
+    line-height: 16px;
   }
 
   .legend-item {
@@ -297,14 +300,19 @@ export class CustomHistoryBar extends HTMLElement {
   }
 
   public getCardSize(): number {
-    return this._config?.show_legend ? 3 : 2;
+    const card = this.shadowRoot?.querySelector<HTMLElement>("ha-card");
+    const measuredHeight = Math.max(
+      card?.scrollHeight ?? 0,
+      card?.getBoundingClientRect().height ?? 0,
+    );
+    return masonrySizeForHeight(
+      measuredHeight > 0 ? measuredHeight : estimateCardHeight(this._config),
+    );
   }
 
   public getGridOptions(): Record<string, number> {
     return {
-      rows: this._config?.show_legend ? 3 : 2,
       columns: 12,
-      min_rows: 2,
       min_columns: 6,
     };
   }
