@@ -88,7 +88,6 @@ const CARD_STYLE = `
     align-items: center;
     min-width: 1px;
     overflow: hidden;
-    border-right: 1px solid rgba(255, 255, 255, 0.4);
     box-sizing: border-box;
     color: #fff;
     font-size: 12px;
@@ -601,7 +600,7 @@ export class CustomHistoryBar extends HTMLElement {
     if (this._error) {
       return `<div class="status error" title="${escapeAttribute(this._error)}">${escapeHtml(localize(this._hass, "loadError"))}<button id="retry" type="button">${escapeHtml(localize(this._hass, "retry"))}</button></div>`;
     }
-    if (this._loading) {
+    if (this._loading && this._segments.length === 0) {
       return `<div class="status">${escapeHtml(localize(this._hass, "loading"))}</div>`;
     }
     if (this._segments.length === 0) {

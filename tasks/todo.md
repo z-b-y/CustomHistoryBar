@@ -51,3 +51,18 @@
 - Sections zobrazení nemá pevný počet řádků, takže respektuje přirozenou výšku i zalomenou legendu.
 - Automatické testy pokrývají všech 16 kombinací názvu, aktuálního stavu, časové osy a legendy.
 - V prohlížeči byla ověřena plná varianta s výškou 161 px a minimální varianta s výškou 62 px.
+
+## Stabilita vykreslení a časové osy
+
+- [x] Odstranit bílý oddělovač mezi sousedními segmenty.
+- [x] U půlnoční značky časové osy zobrazovat datum ve formátu `den. měsíc.`.
+- [x] Zabránit změně výšky při obnovení historie, pokud už karta obsahuje data.
+- [x] Doplnit regresní testy vykreslení a obnovování.
+- [x] Provést build a vizuální kontrolu.
+
+### Kontrola stability vykreslení
+
+- Sousední segmenty nemají oddělovací rámeček a navazují přímo.
+- Hlavní značka v místní půlnoci používá datum, například `16. 7.`.
+- Při obnovení už vykreslených dat se nezobrazuje dodatečný stav načítání, takže se nemění výška karty.
+- Prošlo 50 automatických testů, TypeScript kontrola i produkční build.

@@ -13,7 +13,7 @@ describe("buildFourHourTicks", () => {
     );
 
     expect(ticks.map((tick) => tick.label)).toEqual([
-      "0:00",
+      "16. 7.",
       "4:00",
       "8:00",
       "12:00",
@@ -30,7 +30,7 @@ describe("buildFourHourTicks", () => {
     );
 
     expect(ticks.map((tick) => tick.label)).toEqual([
-      "0:00",
+      "29. 3.",
       "4:00",
       "8:00",
     ]);
@@ -45,7 +45,7 @@ describe("buildFourHourTicks", () => {
     );
 
     expect(ticks.map((tick) => tick.label)).toEqual([
-      "0:00",
+      "25. 10.",
       "4:00",
       "8:00",
     ]);

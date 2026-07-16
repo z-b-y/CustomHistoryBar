@@ -5,6 +5,7 @@ const MAIN_TICK_HOURS = 4;
 const MAIN_TICK_TOLERANCE = 60 * 1000;
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
+const dateFormatterCache = new Map<string, Intl.DateTimeFormat>();
 
 const formatterFor = (timeZone?: string): Intl.DateTimeFormat => {
   const cacheKey = timeZone || "__local__";
@@ -49,6 +50,33 @@ export const clockLabel = (timestamp: number, timeZone?: string): string => {
   return `${hour}:${String(minute).padStart(2, "0")}`;
 };
 
+export const calendarLabel = (timestamp: number, timeZone?: string): string => {
+  const cacheKey = timeZone || "__local__";
+  let formatter = dateFormatterCache.get(cacheKey);
+  if (!formatter) {
+    try {
+      formatter = new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        ...(timeZone ? { timeZone } : {}),
+      });
+    } catch {
+      formatter = new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "numeric",
+      });
+    }
+    dateFormatterCache.set(cacheKey, formatter);
+  }
+
+  const parts = formatter.formatToParts(timestamp);
+  const day = parts.find((part) => part.type === "day")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  return day && month
+    ? `${Number(day)}. ${Number(month)}.`
+    : formatter.format(timestamp);
+};
+
 const tickPosition = (
   timestamp: number,
   windowStart: number,
@@ -82,7 +110,7 @@ export function buildFourHourTicks(
     ticks.push({
       timestamp,
       position: tickPosition(timestamp, windowStart, windowEnd),
-      label: `${hour}:00`,
+      label: hour === 0 ? calendarLabel(timestamp, timeZone) : `${hour}:00`,
     });
   }
   return ticks;

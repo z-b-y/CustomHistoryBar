@@ -1,7 +1,7 @@
-var H = Object.defineProperty;
-var M = (s, o, t) => o in s ? H(s, o, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[o] = t;
-var p = (s, o, t) => M(s, typeof o != "symbol" ? o + "" : o, t);
-const C = {
+var M = Object.defineProperty;
+var q = (s, o, t) => o in s ? M(s, o, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[o] = t;
+var p = (s, o, t) => q(s, typeof o != "symbol" ? o + "" : o, t);
+const E = {
   healthy: "#84a5d4",
   fine: "#41c49d",
   fair: "#f8e71e",
@@ -9,7 +9,7 @@ const C = {
   unhealthy: "#ff6669",
   unknown: "#9e9e9e",
   unavailable: "#616161"
-}, q = [
+}, R = [
   "healthy",
   "fine",
   "fair",
@@ -29,7 +29,7 @@ const C = {
 }, x = (s) => s !== null && typeof s == "object" && !Array.isArray(s) && Object.entries(s).every(
   ([o, t]) => o.trim().length > 0 && typeof t == "string" && t.trim().length > 0
 ), m = (s) => s.trim().toLowerCase();
-function R(s) {
+function F(s) {
   if (!s || typeof s != "object")
     throw new Error("Invalid card configuration");
   if (typeof s.entity != "string")
@@ -72,9 +72,9 @@ function R(s) {
 }
 const $ = (s, o) => {
   const t = m(o);
-  return s.state_colors[t] ?? C[t] ?? s.fallback_color;
-}, a = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"), d = a, z = (s) => /^#[0-9a-f]{6}$/i.test(s);
-async function F(s, o, t, e) {
+  return s.state_colors[t] ?? E[t] ?? s.fallback_color;
+}, l = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"), d = l, z = (s) => /^#[0-9a-f]{6}$/i.test(s);
+async function I(s, o, t, e) {
   const i = await s.callWS({
     type: "history/history_during_period",
     start_time: new Date(t).toISOString(),
@@ -87,7 +87,7 @@ async function F(s, o, t, e) {
   });
   return Array.isArray(i?.[o]) ? i[o] : [];
 }
-function I(s) {
+function A(s) {
   const o = /* @__PURE__ */ new Map();
   for (const t of s) {
     const i = (t.lc ?? t.lu) * 1e3;
@@ -100,7 +100,7 @@ function I(s) {
     (t, e) => t.timestamp - e.timestamp
   );
 }
-function A(s, o) {
+function D(s, o) {
   if (s.length === 0 || !o)
     return s;
   const t = Date.parse(o.last_changed) / 1e3, e = Date.parse(o.last_updated) / 1e3;
@@ -114,25 +114,25 @@ function A(s, o) {
     }
   ] : s;
 }
-function D(s, o, t) {
+function N(s, o, t) {
   if (!Number.isFinite(o) || !Number.isFinite(t) || t <= o)
     return [];
-  const e = I(s).filter(
-    (l) => l.timestamp < t
+  const e = A(s).filter(
+    (a) => a.timestamp < t
   ), i = [];
   let r;
-  for (const l of e)
-    l.timestamp <= o ? r = l : i.push(l);
+  for (const a of e)
+    a.timestamp <= o ? r = a : i.push(a);
   r && i.unshift({
     ...r,
     timestamp: o
   });
   const n = [];
-  for (let l = 0; l < i.length; l += 1) {
-    const _ = i[l];
+  for (let a = 0; a < i.length; a += 1) {
+    const _ = i[a];
     if (!_)
       continue;
-    const f = i[l + 1], h = Math.max(_.timestamp, o), g = Math.min(f?.timestamp ?? t, t);
+    const f = i[a + 1], h = Math.max(_.timestamp, o), g = Math.min(f?.timestamp ?? t, t);
     if (g <= h)
       continue;
     const y = n[n.length - 1];
@@ -140,19 +140,19 @@ function D(s, o, t) {
   }
   return n;
 }
-function N(s, o, t) {
+function O(s, o, t) {
   const e = t - o;
   return e <= 0 ? { left: 0, width: 0 } : {
     left: (s.start - o) / e * 100,
     width: (s.end - s.start) / e * 100
   };
 }
-const O = 32, j = 30, G = 32, B = 42, P = 28, E = 50, Z = (s) => {
+const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
   if (!s)
-    return E;
+    return L;
   const o = s.show_name || s.show_current_state;
-  return O + j + (o ? G : 0) + (s.show_timeline ? B : 0) + (s.show_legend ? P : 0);
-}, U = (s) => Math.max(1, Math.ceil(s / E)), K = {
+  return j + G + (o ? B : 0) + (s.show_timeline ? P : 0) + (s.show_legend ? K : 0);
+}, Y = (s) => Math.max(1, Math.ceil(s / L)), Z = {
   en: {
     title: "History bar",
     entity: "Entity",
@@ -205,7 +205,7 @@ const O = 32, j = 30, G = 32, B = 42, P = 28, E = 50, Z = (s) => {
     hoursShort: "h",
     minutesShort: "min"
   }
-}, Y = (s) => s?.locale?.language?.toLowerCase().startsWith("cs") ? "cs" : "en", c = (s, o) => K[Y(s)][o], v = 900 * 1e3, W = 4, X = 60 * 1e3, S = /* @__PURE__ */ new Map(), V = (s) => {
+}, W = (s) => s?.locale?.language?.toLowerCase().startsWith("cs") ? "cs" : "en", c = (s, o) => Z[W(s)][o], v = 900 * 1e3, X = 4, V = 60 * 1e3, S = /* @__PURE__ */ new Map(), k = /* @__PURE__ */ new Map(), J = (s) => {
   const o = s || "__local__", t = S.get(o);
   if (t)
     return t;
@@ -225,41 +225,61 @@ const O = 32, j = 30, G = 32, B = 42, P = 28, E = 50, Z = (s) => {
     });
   }
   return S.set(o, e), e;
-}, L = (s, o) => {
-  const t = V(o).formatToParts(s), e = Number(t.find((r) => r.type === "hour")?.value ?? 0), i = Number(
+}, T = (s, o) => {
+  const t = J(o).formatToParts(s), e = Number(t.find((r) => r.type === "hour")?.value ?? 0), i = Number(
     t.find((r) => r.type === "minute")?.value ?? 0
   );
   return { hour: e % 24, minute: i };
-}, J = (s, o) => {
-  const { hour: t, minute: e } = L(s, o);
+}, Q = (s, o) => {
+  const { hour: t, minute: e } = T(s, o);
   return `${t}:${String(e).padStart(2, "0")}`;
-}, T = (s, o, t) => (s - o) / (t - o) * 100;
-function Q(s, o, t) {
+}, tt = (s, o) => {
+  const t = o || "__local__";
+  let e = k.get(t);
+  if (!e) {
+    try {
+      e = new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        ...o ? { timeZone: o } : {}
+      });
+    } catch {
+      e = new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "numeric"
+      });
+    }
+    k.set(t, e);
+  }
+  const i = e.formatToParts(s), r = i.find((a) => a.type === "day")?.value, n = i.find((a) => a.type === "month")?.value;
+  return r && n ? `${Number(r)}. ${Number(n)}.` : e.format(s);
+}, H = (s, o, t) => (s - o) / (t - o) * 100;
+function et(s, o, t) {
   if (!Number.isFinite(s) || !Number.isFinite(o) || o <= s)
     return [];
   const e = Math.ceil(s / v) * v, i = [];
   for (let r = e; r <= o; r += v) {
-    const { hour: n, minute: l } = L(r, t);
-    l !== 0 || n % W !== 0 || i.push({
+    const { hour: n, minute: a } = T(r, t);
+    a !== 0 || n % X !== 0 || i.push({
       timestamp: r,
-      position: T(r, s, o),
-      label: `${n}:00`
+      position: H(r, s, o),
+      label: n === 0 ? tt(r, t) : `${n}:00`
     });
   }
   return i;
 }
-function tt(s, o, t, e, i = []) {
+function st(s, o, t, e, i = []) {
   if (t <= o)
     return [];
   const r = [];
   for (let n = 1; n < s.length; n += 1) {
-    const l = s[n - 1], _ = s[n];
-    !l || !_ || l.end !== _.start || l.state === _.state || _.start <= o || _.start >= t || i.some(
-      (f) => Math.abs(f.timestamp - _.start) <= X
+    const a = s[n - 1], _ = s[n];
+    !a || !_ || a.end !== _.start || a.state === _.state || _.start <= o || _.start >= t || i.some(
+      (f) => Math.abs(f.timestamp - _.start) <= V
     ) || r.push({
       timestamp: _.start,
-      position: T(_.start, o, t),
-      label: J(_.start, e),
+      position: H(_.start, o, t),
+      label: Q(_.start, e),
       state: _.state
     });
   }
@@ -331,7 +351,6 @@ const w = `
     align-items: center;
     min-width: 1px;
     overflow: hidden;
-    border-right: 1px solid rgba(255, 255, 255, 0.4);
     box-sizing: border-box;
     color: #fff;
     font-size: 12px;
@@ -450,7 +469,7 @@ const w = `
     font-size: 13px;
   }
 `;
-class et extends HTMLElement {
+class it extends HTMLElement {
   constructor() {
     super();
     p(this, "_hass");
@@ -480,7 +499,7 @@ class et extends HTMLElement {
   }
   setConfig(t) {
     const e = this._config ? `${this._config.entity}:${this._config.hours_to_show}` : void 0;
-    this._config = R(t);
+    this._config = F(t);
     const i = `${this._config.entity}:${this._config.hours_to_show}`;
     e !== i && (this._requestGeneration += 1, this._segments = [], this._error = void 0), this._restartRefreshTimer(), this.render(), e !== i && this._queueHistoryLoad();
   }
@@ -504,8 +523,8 @@ class et extends HTMLElement {
       t?.scrollHeight ?? 0,
       t?.getBoundingClientRect().height ?? 0
     );
-    return U(
-      e > 0 ? e : Z(this._config)
+    return Y(
+      e > 0 ? e : U(this._config)
     );
   }
   getGridOptions() {
@@ -555,7 +574,7 @@ class et extends HTMLElement {
     const t = this._requestGeneration, e = this._config.entity, i = Date.now(), r = i - this._config.hours_to_show * 60 * 60 * 1e3;
     this._loading = !0, this._error = void 0, this.render();
     try {
-      const n = await F(
+      const n = await I(
         this._hass,
         e,
         r,
@@ -564,9 +583,9 @@ class et extends HTMLElement {
       if (t !== this._requestGeneration || e !== this._config?.entity)
         return;
       this._windowStart = r, this._windowEnd = i;
-      const l = this._hass.states[e];
-      this._segments = D(
-        A(n, l),
+      const a = this._hass.states[e];
+      this._segments = N(
+        D(n, a),
         r,
         i
       );
@@ -631,32 +650,32 @@ class et extends HTMLElement {
   }
   _segmentsMarkup() {
     return !this._config || this._windowEnd <= this._windowStart ? "" : this._segments.map((t) => {
-      const e = N(
+      const e = O(
         t,
         this._windowStart,
         this._windowEnd
       ), i = this._stateLabel(t.state), r = this._safeColor(
         $(this._config, t.state),
         u.fallback_color
-      ), n = `${i}: ${this._formatTime(t.start, !0)}–${this._formatTime(t.end, !0)} · ${c(this._hass, "duration")}: ${this._formatDuration(t.end - t.start)}`, l = e.width >= 7 ? `<span class="segment-label">${a(i)}</span>` : "";
-      return `<div class="segment" style="left:${e.left.toFixed(4)}%;width:${e.width.toFixed(4)}%;background:${d(r)}" title="${d(n)}" aria-label="${d(n)}">${l}</div>`;
+      ), n = `${i}: ${this._formatTime(t.start, !0)}–${this._formatTime(t.end, !0)} · ${c(this._hass, "duration")}: ${this._formatDuration(t.end - t.start)}`, a = e.width >= 7 ? `<span class="segment-label">${l(i)}</span>` : "";
+      return `<div class="segment" style="left:${e.left.toFixed(4)}%;width:${e.width.toFixed(4)}%;background:${d(r)}" title="${d(n)}" aria-label="${d(n)}">${a}</div>`;
     }).join("");
   }
   _timelineMarkup() {
     if (!this._config?.show_timeline)
       return "";
-    const t = this._windowStart || Date.now() - this._config.hours_to_show * 60 * 60 * 1e3, e = this._windowEnd || Date.now(), i = this._hass?.config.time_zone, r = Q(t, e, i), n = tt(
+    const t = this._windowStart || Date.now() - this._config.hours_to_show * 60 * 60 * 1e3, e = this._windowEnd || Date.now(), i = this._hass?.config.time_zone, r = et(t, e, i), n = st(
       this._segments,
       t,
       e,
       i,
       r
-    ), l = (h) => h < 3 ? " edge-left" : h > 97 ? " edge-right" : "", _ = r.map(
-      (h) => `<span class="axis-tick major-tick${l(h.position)}" style="left:${h.position.toFixed(4)}%">${a(h.label)}</span>`
+    ), a = (h) => h < 3 ? " edge-left" : h > 97 ? " edge-right" : "", _ = r.map(
+      (h) => `<span class="axis-tick major-tick${a(h.position)}" style="left:${h.position.toFixed(4)}%">${l(h.label)}</span>`
     ).join("");
     return `<div class="timeline" aria-hidden="true">${n.map((h) => {
       const g = h.state ? this._stateLabel(h.state) : "", y = g ? `${h.label} · ${g}` : h.label;
-      return `<span class="axis-tick change-tick${l(h.position)}" style="left:${h.position.toFixed(4)}%" title="${d(y)}">${a(h.label)}</span>`;
+      return `<span class="axis-tick change-tick${a(h.position)}" style="left:${h.position.toFixed(4)}%" title="${d(y)}">${l(h.label)}</span>`;
     }).join("")}${_}</div>`;
   }
   _legendMarkup() {
@@ -667,16 +686,16 @@ class et extends HTMLElement {
       ...Object.keys(this._config.state_colors),
       ...this._segments.map((n) => n.state)
     ].map(m), r = [...new Set(e)].map((n) => {
-      const l = this._safeColor(
+      const a = this._safeColor(
         $(this._config, n),
         u.fallback_color
       );
-      return `<span class="legend-item"><span class="swatch" style="background:${d(l)}"></span>${a(this._stateLabel(n))}</span>`;
+      return `<span class="legend-item"><span class="swatch" style="background:${d(a)}"></span>${l(this._stateLabel(n))}</span>`;
     }).join("");
     return r ? `<div class="legend">${r}</div>` : "";
   }
   _statusMarkup() {
-    return this._error ? `<div class="status error" title="${d(this._error)}">${a(c(this._hass, "loadError"))}<button id="retry" type="button">${a(c(this._hass, "retry"))}</button></div>` : this._loading ? `<div class="status">${a(c(this._hass, "loading"))}</div>` : this._segments.length === 0 ? `<div class="empty">${a(c(this._hass, "noHistory"))} ${a(c(this._hass, "recorderHint"))}</div>` : "";
+    return this._error ? `<div class="status error" title="${d(this._error)}">${l(c(this._hass, "loadError"))}<button id="retry" type="button">${l(c(this._hass, "retry"))}</button></div>` : this._loading && this._segments.length === 0 ? `<div class="status">${l(c(this._hass, "loading"))}</div>` : this._segments.length === 0 ? `<div class="empty">${l(c(this._hass, "noHistory"))} ${l(c(this._hass, "recorderHint"))}</div>` : "";
   }
   _openMoreInfo() {
     this._config?.entity && this.dispatchEvent(
@@ -691,14 +710,14 @@ class et extends HTMLElement {
     if (!this.shadowRoot)
       return;
     if (!this._config) {
-      this.shadowRoot.innerHTML = `<style>${w}</style><ha-card><div class="empty">${a(c(this._hass, "noEntity"))}</div></ha-card>`;
+      this.shadowRoot.innerHTML = `<style>${w}</style><ha-card><div class="empty">${l(c(this._hass, "noEntity"))}</div></ha-card>`;
       return;
     }
     if (!this._config.entity) {
-      this.shadowRoot.innerHTML = `<style>${w}</style><ha-card><div class="empty">${a(c(this._hass, "noEntity"))}</div></ha-card>`;
+      this.shadowRoot.innerHTML = `<style>${w}</style><ha-card><div class="empty">${l(c(this._hass, "noEntity"))}</div></ha-card>`;
       return;
     }
-    const t = this._entity(), e = this._config.name || (typeof t?.attributes.friendly_name == "string" ? t.attributes.friendly_name : this._config.entity), i = this._config.show_current_state && t ? `<span class="current-state">${a(this._stateLabel(t.state))}</span>` : "", r = this._config.show_name ? `<span class="title">${a(e)}</span>` : "", n = r || i ? `<div class="header interactive${r ? "" : " state-only"}" id="more-info" role="button" tabindex="0">${r}${i}</div>` : "", l = this._safeColor(
+    const t = this._entity(), e = this._config.name || (typeof t?.attributes.friendly_name == "string" ? t.attributes.friendly_name : this._config.entity), i = this._config.show_current_state && t ? `<span class="current-state">${l(this._stateLabel(t.state))}</span>` : "", r = this._config.show_name ? `<span class="title">${l(e)}</span>` : "", n = r || i ? `<div class="header interactive${r ? "" : " state-only"}" id="more-info" role="button" tabindex="0">${r}${i}</div>` : "", a = this._safeColor(
       this._config.no_data_color,
       u.no_data_color
     ), _ = `${e}, ${this._config.hours_to_show} ${c(this._hass, "hoursShort")}`;
@@ -706,7 +725,7 @@ class et extends HTMLElement {
       <style>${w}</style>
       <ha-card>
         ${n}
-        <div class="bar interactive" id="history-bar" role="img" tabindex="0" aria-label="${d(_)}" style="background-color:${d(l)};background-image:repeating-linear-gradient(135deg, transparent 0, transparent 4px, rgba(127,127,127,.12) 4px, rgba(127,127,127,.12) 8px)">
+        <div class="bar interactive" id="history-bar" role="img" tabindex="0" aria-label="${d(_)}" style="background-color:${d(a)};background-image:repeating-linear-gradient(135deg, transparent 0, transparent 4px, rgba(127,127,127,.12) 4px, rgba(127,127,127,.12) 8px)">
           ${this._segmentsMarkup()}
         </div>
         ${this._timelineMarkup()}
@@ -722,7 +741,7 @@ class et extends HTMLElement {
       });
   }
 }
-const st = `
+const ot = `
   :host {
     display: block;
   }
@@ -845,7 +864,7 @@ const st = `
     }
   }
 `;
-class it extends HTMLElement {
+class rt extends HTMLElement {
   constructor() {
     super();
     p(this, "_hass");
@@ -894,7 +913,7 @@ class it extends HTMLElement {
   _editableStates() {
     const t = this._entityOptions().map(m), e = Object.keys(this._config.state_colors ?? {}).map(
       m
-    ), i = t.length > 0 ? t : [...q];
+    ), i = t.length > 0 ? t : [...R];
     return [.../* @__PURE__ */ new Set([...i, ...e, "unknown", "unavailable"])];
   }
   _stateLabel(t) {
@@ -910,7 +929,7 @@ class it extends HTMLElement {
     return t;
   }
   _effectiveColor(t) {
-    return this._config.state_colors?.[t] ?? C[t] ?? this._config.fallback_color ?? u.fallback_color;
+    return this._config.state_colors?.[t] ?? E[t] ?? this._config.fallback_color ?? u.fallback_color;
   }
   _entityListMarkup() {
     return this._hass ? Object.values(this._hass.states).filter(
@@ -919,7 +938,7 @@ class it extends HTMLElement {
       (t, e) => t.entity_id.localeCompare(e.entity_id)
     ).map((t) => {
       const e = typeof t.attributes.friendly_name == "string" ? t.attributes.friendly_name : t.entity_id;
-      return `<option value="${d(t.entity_id)}">${a(e)}</option>`;
+      return `<option value="${d(t.entity_id)}">${l(e)}</option>`;
     }).join("") : "";
   }
   _colorsMarkup() {
@@ -928,12 +947,12 @@ class it extends HTMLElement {
       return `
           <div class="color-row">
             <span class="state-name">
-              ${a(this._stateLabel(t))}
-              <span class="raw-state">${a(t)}</span>
+              ${l(this._stateLabel(t))}
+              <span class="raw-state">${l(t)}</span>
             </span>
             <input class="state-color-picker" type="color" data-state="${d(t)}" value="${d(i)}" aria-label="${d(this._stateLabel(t))}">
             <input class="state-color-text" type="text" data-state="${d(t)}" value="${d(e)}" aria-label="${d(`${this._stateLabel(t)} color`)}">
-            <button class="reset" type="button" data-reset-state="${d(t)}">${a(c(this._hass, "reset"))}</button>
+            <button class="reset" type="button" data-reset-state="${d(t)}">${l(c(this._hass, "reset"))}</button>
           </div>
         `;
     }).join("");
@@ -1036,57 +1055,57 @@ class it extends HTMLElement {
   }
   render() {
     this.shadowRoot && (this.shadowRoot.innerHTML = `
-      <style>${st}</style>
+      <style>${ot}</style>
       <div class="editor">
         <div class="field">
-          <label for="entity">${a(c(this._hass, "entity"))}</label>
+          <label for="entity">${l(c(this._hass, "entity"))}</label>
           <input id="entity" type="text" list="enum-entities" value="${d(this._config.entity ?? "")}" placeholder="sensor.netatmo_health_index">
           <datalist id="enum-entities">${this._entityListMarkup()}</datalist>
         </div>
 
         <div class="field">
-          <label for="name">${a(c(this._hass, "name"))}</label>
+          <label for="name">${l(c(this._hass, "name"))}</label>
           <input id="name" type="text" value="${d(this._config.name ?? "")}">
         </div>
 
         <div class="grid">
           <div class="field">
-            <label for="hours_to_show">${a(c(this._hass, "hours"))}</label>
+            <label for="hours_to_show">${l(c(this._hass, "hours"))}</label>
             <input id="hours_to_show" type="number" min="0.25" max="720" step="0.25" value="${d(this._config.hours_to_show ?? u.hours_to_show)}">
           </div>
           <div class="field">
-            <label for="refresh_interval">${a(c(this._hass, "refresh"))}</label>
+            <label for="refresh_interval">${l(c(this._hass, "refresh"))}</label>
             <input id="refresh_interval" type="number" min="15" max="3600" step="1" value="${d(this._config.refresh_interval ?? u.refresh_interval)}">
           </div>
         </div>
 
-        <div class="section-title">${a(c(this._hass, "colors"))}</div>
+        <div class="section-title">${l(c(this._hass, "colors"))}</div>
         <div class="colors">${this._colorsMarkup()}</div>
 
         <div class="grid">
           <div class="field">
-            <label for="fallback_color">${a(c(this._hass, "fallback"))}</label>
+            <label for="fallback_color">${l(c(this._hass, "fallback"))}</label>
             <input id="fallback_color" type="text" value="${d(this._config.fallback_color ?? u.fallback_color)}">
           </div>
           <div class="field">
-            <label for="no_data_color">${a(c(this._hass, "noDataColor"))}</label>
+            <label for="no_data_color">${l(c(this._hass, "noDataColor"))}</label>
             <input id="no_data_color" type="text" value="${d(this._config.no_data_color ?? u.no_data_color)}">
           </div>
         </div>
 
         <div class="toggles">
-          <label class="toggle"><input id="show_name" type="checkbox" ${this._config.show_name ?? u.show_name ? "checked" : ""}>${a(c(this._hass, "showName"))}</label>
-          <label class="toggle"><input id="show_legend" type="checkbox" ${this._config.show_legend ?? u.show_legend ? "checked" : ""}>${a(c(this._hass, "showLegend"))}</label>
-          <label class="toggle"><input id="show_current_state" type="checkbox" ${this._config.show_current_state ?? u.show_current_state ? "checked" : ""}>${a(c(this._hass, "showCurrentState"))}</label>
-          <label class="toggle"><input id="show_timeline" type="checkbox" ${this._config.show_timeline ?? u.show_timeline ? "checked" : ""}>${a(c(this._hass, "showTimeline"))}</label>
+          <label class="toggle"><input id="show_name" type="checkbox" ${this._config.show_name ?? u.show_name ? "checked" : ""}>${l(c(this._hass, "showName"))}</label>
+          <label class="toggle"><input id="show_legend" type="checkbox" ${this._config.show_legend ?? u.show_legend ? "checked" : ""}>${l(c(this._hass, "showLegend"))}</label>
+          <label class="toggle"><input id="show_current_state" type="checkbox" ${this._config.show_current_state ?? u.show_current_state ? "checked" : ""}>${l(c(this._hass, "showCurrentState"))}</label>
+          <label class="toggle"><input id="show_timeline" type="checkbox" ${this._config.show_timeline ?? u.show_timeline ? "checked" : ""}>${l(c(this._hass, "showTimeline"))}</label>
         </div>
       </div>
     `, this._bindEvents());
   }
 }
-const b = "custom-history-bar", k = "custom-history-bar-editor";
-customElements.get(k) || customElements.define(k, it);
-customElements.get(b) || customElements.define(b, et);
+const b = "custom-history-bar", C = "custom-history-bar-editor";
+customElements.get(C) || customElements.define(C, rt);
+customElements.get(b) || customElements.define(b, it);
 window.customCards = window.customCards ?? [];
 window.customCards.some((s) => s.type === b) || window.customCards.push({
   type: b,

@@ -172,6 +172,45 @@ describe("CustomHistoryBar", () => {
     });
     expect(card.shadowRoot?.querySelector(".header")).toBeNull();
   });
+
+  it("keeps the layout stable while refreshing existing history", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      hass: HomeAssistant;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    card.setConfig({
+      entity: entityId,
+      show_name: false,
+      show_current_state: false,
+      show_timeline: false,
+      show_legend: false,
+    });
+    card.hass = createHass();
+    (card as unknown as { _segments: Array<Record<string, unknown>> })._segments = [
+      { state: "healthy", start: 1, end: 2 },
+    ];
+    (card as unknown as { _windowStart: number })._windowStart = 1;
+    (card as unknown as { _windowEnd: number })._windowEnd = 2;
+    (card as unknown as { _loading: boolean })._loading = true;
+    (card as unknown as { render(): void }).render();
+
+    expect(card.shadowRoot?.querySelector(".header")).toBeNull();
+    expect(card.shadowRoot?.querySelector(".timeline")).toBeNull();
+    expect(card.shadowRoot?.querySelector(".legend")).toBeNull();
+    expect(card.shadowRoot?.querySelector(".status")).toBeNull();
+    expect(card.shadowRoot?.querySelectorAll(".segment")).toHaveLength(1);
+  });
+
+  it("renders adjacent segments without a separating border", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      setConfig(config: Record<string, unknown>): void;
+    };
+    card.setConfig({ entity: entityId });
+
+    expect(card.shadowRoot?.querySelector("style")?.textContent).not.toContain(
+      "border-right",
+    );
+  });
 });
 
 describe("CustomHistoryBarEditor", () => {

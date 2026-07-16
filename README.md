@@ -102,7 +102,7 @@ show_timeline: true
 | `show_name` | `true` | Zobrazí název entity nebo vlastní název karty. |
 | `show_legend` | `false` | Zobrazí legendu stavů. |
 | `show_current_state` | `true` | Zobrazí aktuální stav v záhlaví. |
-| `show_timeline` | `true` | Zobrazí hlavní značky po čtyřech hodinách a méně výrazné časy změn stavů. |
+| `show_timeline` | `true` | Zobrazí hlavní značky po čtyřech hodinách, datum místo půlnoci a méně výrazné časy změn stavů. |
 
 ## Historie a Recorder
 
