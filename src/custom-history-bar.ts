@@ -111,23 +111,29 @@ const CARD_STYLE = `
 
   .axis-tick {
     position: absolute;
-    transform: translateX(-50%);
+    width: 0;
     white-space: nowrap;
   }
 
-  .axis-tick.edge-left {
+  .tick-label {
+    position: absolute;
+    left: 0;
+    transform: translateX(-50%);
+  }
+
+  .tick-label.edge-left {
     transform: none;
   }
 
-  .axis-tick.edge-right {
+  .tick-label.edge-right {
     transform: translateX(-100%);
   }
 
   .axis-tick::before {
     position: absolute;
-    left: 50%;
+    left: 0;
     width: 1px;
-    transform: translateX(-50%);
+    transform: translateX(-0.5px);
     background: currentColor;
     content: "";
   }
@@ -555,19 +561,19 @@ export class CustomHistoryBar extends HTMLElement {
       timeZone,
       mainTicks,
     );
-    const alignmentClass = (position: number): string =>
+    const labelAlignmentClass = (position: number): string =>
       position < 3 ? " edge-left" : position > 97 ? " edge-right" : "";
     const mainMarkup = mainTicks
       .map(
         (tick) =>
-          `<span class="axis-tick major-tick${alignmentClass(tick.position)}" style="left:${tick.position.toFixed(4)}%">${escapeHtml(tick.label)}</span>`,
+          `<span class="axis-tick major-tick" style="left:${tick.position.toFixed(4)}%"><span class="tick-label${labelAlignmentClass(tick.position)}">${escapeHtml(tick.label)}</span></span>`,
       )
       .join("");
     const changeMarkup = changeTicks
       .map((tick) => {
         const stateLabel = tick.state ? this._stateLabel(tick.state) : "";
         const title = stateLabel ? `${tick.label} · ${stateLabel}` : tick.label;
-        return `<span class="axis-tick change-tick${alignmentClass(tick.position)}" style="left:${tick.position.toFixed(4)}%" title="${escapeAttribute(title)}">${escapeHtml(tick.label)}</span>`;
+        return `<span class="axis-tick change-tick" style="left:${tick.position.toFixed(4)}%" title="${escapeAttribute(title)}"><span class="tick-label${labelAlignmentClass(tick.position)}">${escapeHtml(tick.label)}</span></span>`;
       })
       .join("");
     return `<div class="timeline" aria-hidden="true">${changeMarkup}${mainMarkup}</div>`;

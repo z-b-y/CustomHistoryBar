@@ -211,10 +211,31 @@ describe("CustomHistoryBar", () => {
       "border-right",
     );
   });
+
+  it("anchors timeline lines at their exact time independently of labels", () => {
+    const card = document.createElement("custom-history-bar") as HTMLElement & {
+      hass: HomeAssistant;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    card.setConfig({ entity: entityId, show_timeline: true });
+    card.hass = createHass();
+    (card as unknown as { _windowStart: number })._windowStart = Date.parse(
+      "2026-07-15T22:00:00.000Z",
+    );
+    (card as unknown as { _windowEnd: number })._windowEnd = Date.parse(
+      "2026-07-16T22:00:00.000Z",
+    );
+    (card as unknown as { render(): void }).render();
+
+    const firstTick = card.shadowRoot?.querySelector<HTMLElement>(".axis-tick");
+    expect(firstTick?.style.left).toBe("0.0000%");
+    expect(firstTick?.classList.contains("edge-left")).toBe(false);
+    expect(firstTick?.querySelector(".tick-label.edge-left")).not.toBeNull();
+  });
 });
 
 describe("CustomHistoryBarEditor", () => {
-  it("normalizes state keys and emits live color changes", () => {
+  it("normalizes state keys and keeps the picker mounted during live changes", () => {
     const editor = document.createElement(
       "custom-history-bar-editor",
     ) as HTMLElement & {
@@ -236,6 +257,7 @@ describe("CustomHistoryBarEditor", () => {
     let changedConfig: Record<string, unknown> | undefined;
     editor.addEventListener("config-changed", (event) => {
       changedConfig = (event as CustomEvent).detail.config;
+      editor.setConfig(changedConfig!);
     });
     input!.value = "#123456";
     input!.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
@@ -243,6 +265,56 @@ describe("CustomHistoryBarEditor", () => {
     expect(changedConfig).toMatchObject({
       state_colors: { healthy: "#123456" },
     });
+
+    changedConfig = undefined;
+    const picker = editor.shadowRoot?.querySelector<HTMLInputElement>(
+      '.state-color-picker[data-state="healthy"]',
+    );
+    picker!.value = "#654321";
+    picker!.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+    expect(changedConfig).toMatchObject({
+      state_colors: { healthy: "#654321" },
+    });
+    expect(
+      editor.shadowRoot?.querySelector('.state-color-picker[data-state="healthy"]'),
+    ).toBe(picker);
+  });
+
+  it("confirms fallback and no-data colors through their pickers", () => {
+    const editor = document.createElement(
+      "custom-history-bar-editor",
+    ) as HTMLElement & {
+      hass: HomeAssistant;
+      setConfig(config: Record<string, unknown>): void;
+    };
+    editor.setConfig({ entity: entityId });
+    editor.hass = createHass();
+    document.body.append(editor);
+
+    const changes: Array<Record<string, unknown>> = [];
+    editor.addEventListener("config-changed", (event) => {
+      changes.push((event as CustomEvent).detail.config);
+    });
+    const fallbackPicker = editor.shadowRoot?.querySelector<HTMLInputElement>(
+      '[data-color-field="fallback_color"]',
+    );
+    const noDataPicker = editor.shadowRoot?.querySelector<HTMLInputElement>(
+      '[data-color-field="no_data_color"]',
+    );
+    expect(fallbackPicker).not.toBeNull();
+    expect(noDataPicker).not.toBeNull();
+
+    fallbackPicker!.value = "#102030";
+    fallbackPicker!.dispatchEvent(new Event("input", { bubbles: true }));
+    noDataPicker!.value = "#405060";
+    noDataPicker!.dispatchEvent(new Event("input", { bubbles: true }));
+
+    expect(changes).toContainEqual(
+      expect.objectContaining({ fallback_color: "#102030" }),
+    );
+    expect(changes).toContainEqual(
+      expect.objectContaining({ no_data_color: "#405060" }),
+    );
   });
 
   it("restores an empty number and clamps out-of-range values", () => {

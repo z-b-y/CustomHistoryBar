@@ -66,3 +66,30 @@
 - Hlavní značka v místní půlnoci používá datum, například `16. 7.`.
 - Při obnovení už vykreslených dat se nezobrazuje dodatečný stav načítání, takže se nemění výška karty.
 - Prošlo 50 automatických testů, TypeScript kontrola i produkční build.
+
+## Potvrzovaný výběr barev a značky časové osy
+
+- [x] Odesílat změnu z nativního pickeru až po jeho potvrzení nebo zavření.
+- [x] Doplnit picker k barvě ostatních stavů a chybějících dat.
+- [x] Oddělit přesnou pozici časové čáry od zarovnání jejího popisku.
+- [x] Doplnit regresní testy editoru a časové osy.
+- [x] Provést build a vizuální kontrolu.
+
+### Kontrola pickeru a značek
+
+- Nativní pickery odesílají konfiguraci až po události `change`; průběžný výběr barvy nemění kartu.
+- Pickery jsou dostupné pro všechny stavové barvy, barvu ostatních stavů i barvu chybějících dat.
+- Časová čára je ukotvená přesně na hodnotě času; posouvá se pouze krajní textový popisek.
+- Prošlo 52 automatických testů, TypeScript kontrola, produkční build a vizuální kontrola v Chromium.
+
+## Plynulý nativní color picker
+
+- [x] Vrátit průběžné promítání barvy při události `input`.
+- [x] Nevykreslovat editor při návratu nezměněné konfigurace z Home Assistantu.
+- [x] Doplnit regresní test zachování aktivního pickeru.
+- [x] Spustit kompletní validaci a regenerovat build.
+
+### Kontrola plynulého pickeru
+
+- Picker promítá barvu průběžně a vrácení stejné konfigurace neodpojí jeho DOM prvek.
+- Prošlo 52 automatických testů, TypeScript kontrola i produkční build.

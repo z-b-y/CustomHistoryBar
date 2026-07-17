@@ -1,7 +1,7 @@
-var M = Object.defineProperty;
-var q = (s, o, t) => o in s ? M(s, o, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[o] = t;
-var p = (s, o, t) => q(s, typeof o != "symbol" ? o + "" : o, t);
-const E = {
+var q = Object.defineProperty;
+var R = (i, r, t) => r in i ? q(i, r, { enumerable: !0, configurable: !0, writable: !0, value: t }) : i[r] = t;
+var p = (i, r, t) => R(i, typeof r != "symbol" ? r + "" : r, t);
+const L = {
   healthy: "#84a5d4",
   fine: "#41c49d",
   fair: "#f8e71e",
@@ -9,7 +9,7 @@ const E = {
   unhealthy: "#ff6669",
   unknown: "#9e9e9e",
   unavailable: "#616161"
-}, R = [
+}, F = [
   "healthy",
   "fine",
   "fair",
@@ -17,7 +17,7 @@ const E = {
   "unhealthy",
   "unknown",
   "unavailable"
-], u = {
+], d = {
   hours_to_show: 24,
   refresh_interval: 60,
   fallback_color: "#607d8b",
@@ -26,133 +26,133 @@ const E = {
   show_legend: !1,
   show_current_state: !0,
   show_timeline: !0
-}, x = (s) => s !== null && typeof s == "object" && !Array.isArray(s) && Object.entries(s).every(
-  ([o, t]) => o.trim().length > 0 && typeof t == "string" && t.trim().length > 0
-), m = (s) => s.trim().toLowerCase();
-function F(s) {
-  if (!s || typeof s != "object")
+}, x = (i) => i !== null && typeof i == "object" && !Array.isArray(i) && Object.entries(i).every(
+  ([r, t]) => r.trim().length > 0 && typeof t == "string" && t.trim().length > 0
+), m = (i) => i.trim().toLowerCase();
+function z(i) {
+  if (!i || typeof i != "object")
     throw new Error("Invalid card configuration");
-  if (typeof s.entity != "string")
+  if (typeof i.entity != "string")
     throw new Error("Entity must be a string");
-  const o = s.hours_to_show ?? u.hours_to_show;
-  if (!Number.isFinite(o) || o < 0.25 || o > 720)
+  const r = i.hours_to_show ?? d.hours_to_show;
+  if (!Number.isFinite(r) || r < 0.25 || r > 720)
     throw new Error("hours_to_show must be between 0.25 and 720");
-  const t = s.refresh_interval ?? u.refresh_interval;
+  const t = i.refresh_interval ?? d.refresh_interval;
   if (!Number.isFinite(t) || t < 15 || t > 3600)
     throw new Error("refresh_interval must be between 15 and 3600 seconds");
-  if (s.state_colors !== void 0 && !x(s.state_colors))
+  if (i.state_colors !== void 0 && !x(i.state_colors))
     throw new Error("state_colors must contain non-empty string values");
-  if (s.state_labels !== void 0 && !x(s.state_labels))
+  if (i.state_labels !== void 0 && !x(i.state_labels))
     throw new Error("state_labels must contain non-empty string values");
   const e = Object.fromEntries(
-    Object.entries(s.state_colors ?? {}).map(([r, n]) => [
-      m(r),
+    Object.entries(i.state_colors ?? {}).map(([o, n]) => [
+      m(o),
       n.trim()
     ])
-  ), i = Object.fromEntries(
-    Object.entries(s.state_labels ?? {}).map(([r, n]) => [
-      m(r),
+  ), s = Object.fromEntries(
+    Object.entries(i.state_labels ?? {}).map(([o, n]) => [
+      m(o),
       n.trim()
     ])
   );
   return {
-    ...s,
-    entity: s.entity.trim(),
-    hours_to_show: o,
+    ...i,
+    entity: i.entity.trim(),
+    hours_to_show: r,
     refresh_interval: t,
     state_colors: e,
-    state_labels: i,
-    fallback_color: s.fallback_color?.trim() || u.fallback_color,
-    no_data_color: s.no_data_color?.trim() || u.no_data_color,
-    show_name: s.show_name ?? u.show_name,
-    show_legend: s.show_legend ?? u.show_legend,
-    show_current_state: s.show_current_state ?? u.show_current_state,
-    show_timeline: s.show_timeline ?? u.show_timeline
+    state_labels: s,
+    fallback_color: i.fallback_color?.trim() || d.fallback_color,
+    no_data_color: i.no_data_color?.trim() || d.no_data_color,
+    show_name: i.show_name ?? d.show_name,
+    show_legend: i.show_legend ?? d.show_legend,
+    show_current_state: i.show_current_state ?? d.show_current_state,
+    show_timeline: i.show_timeline ?? d.show_timeline
   };
 }
-const $ = (s, o) => {
-  const t = m(o);
-  return s.state_colors[t] ?? E[t] ?? s.fallback_color;
-}, l = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"), d = l, z = (s) => /^#[0-9a-f]{6}$/i.test(s);
-async function I(s, o, t, e) {
-  const i = await s.callWS({
+const $ = (i, r) => {
+  const t = m(r);
+  return i.state_colors[t] ?? L[t] ?? i.fallback_color;
+}, l = (i) => String(i).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"), h = l, k = (i) => /^#[0-9a-f]{6}$/i.test(i);
+async function I(i, r, t, e) {
+  const s = await i.callWS({
     type: "history/history_during_period",
     start_time: new Date(t).toISOString(),
     end_time: new Date(e).toISOString(),
-    entity_ids: [o],
+    entity_ids: [r],
     include_start_time_state: !0,
     minimal_response: !0,
     significant_changes_only: !0,
     no_attributes: !0
   });
-  return Array.isArray(i?.[o]) ? i[o] : [];
+  return Array.isArray(s?.[r]) ? s[r] : [];
 }
-function A(s) {
-  const o = /* @__PURE__ */ new Map();
-  for (const t of s) {
-    const i = (t.lc ?? t.lu) * 1e3;
-    typeof t.s != "string" || !Number.isFinite(i) || i < 0 || o.set(i, {
+function A(i) {
+  const r = /* @__PURE__ */ new Map();
+  for (const t of i) {
+    const s = (t.lc ?? t.lu) * 1e3;
+    typeof t.s != "string" || !Number.isFinite(s) || s < 0 || r.set(s, {
       state: m(t.s),
-      timestamp: i
+      timestamp: s
     });
   }
-  return [...o.values()].sort(
+  return [...r.values()].sort(
     (t, e) => t.timestamp - e.timestamp
   );
 }
-function D(s, o) {
-  if (s.length === 0 || !o)
-    return s;
-  const t = Date.parse(o.last_changed) / 1e3, e = Date.parse(o.last_updated) / 1e3;
+function D(i, r) {
+  if (i.length === 0 || !r)
+    return i;
+  const t = Date.parse(r.last_changed) / 1e3, e = Date.parse(r.last_updated) / 1e3;
   return Number.isFinite(t) ? [
-    ...s,
+    ...i,
     {
-      s: o.state,
+      s: r.state,
       a: {},
       lc: t,
       lu: Number.isFinite(e) ? Math.max(t, e) : t
     }
-  ] : s;
+  ] : i;
 }
-function N(s, o, t) {
-  if (!Number.isFinite(o) || !Number.isFinite(t) || t <= o)
+function N(i, r, t) {
+  if (!Number.isFinite(r) || !Number.isFinite(t) || t <= r)
     return [];
-  const e = A(s).filter(
+  const e = A(i).filter(
     (a) => a.timestamp < t
-  ), i = [];
-  let r;
+  ), s = [];
+  let o;
   for (const a of e)
-    a.timestamp <= o ? r = a : i.push(a);
-  r && i.unshift({
-    ...r,
-    timestamp: o
+    a.timestamp <= r ? o = a : s.push(a);
+  o && s.unshift({
+    ...o,
+    timestamp: r
   });
   const n = [];
-  for (let a = 0; a < i.length; a += 1) {
-    const _ = i[a];
-    if (!_)
+  for (let a = 0; a < s.length; a += 1) {
+    const u = s[a];
+    if (!u)
       continue;
-    const f = i[a + 1], h = Math.max(_.timestamp, o), g = Math.min(f?.timestamp ?? t, t);
-    if (g <= h)
+    const f = s[a + 1], _ = Math.max(u.timestamp, r), g = Math.min(f?.timestamp ?? t, t);
+    if (g <= _)
       continue;
     const y = n[n.length - 1];
-    y && y.state === _.state && y.end === h ? y.end = g : n.push({ state: _.state, start: h, end: g });
+    y && y.state === u.state && y.end === _ ? y.end = g : n.push({ state: u.state, start: _, end: g });
   }
   return n;
 }
-function O(s, o, t) {
-  const e = t - o;
+function O(i, r, t) {
+  const e = t - r;
   return e <= 0 ? { left: 0, width: 0 } : {
-    left: (s.start - o) / e * 100,
-    width: (s.end - s.start) / e * 100
+    left: (i.start - r) / e * 100,
+    width: (i.end - i.start) / e * 100
   };
 }
-const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
-  if (!s)
-    return L;
-  const o = s.show_name || s.show_current_state;
-  return j + G + (o ? B : 0) + (s.show_timeline ? P : 0) + (s.show_legend ? K : 0);
-}, Y = (s) => Math.max(1, Math.ceil(s / L)), Z = {
+const j = 32, G = 30, B = 32, P = 42, K = 28, T = 50, U = (i) => {
+  if (!i)
+    return T;
+  const r = i.show_name || i.show_current_state;
+  return j + G + (r ? B : 0) + (i.show_timeline ? P : 0) + (i.show_legend ? K : 0);
+}, Y = (i) => Math.max(1, Math.ceil(i / T)), Z = {
   en: {
     title: "History bar",
     entity: "Entity",
@@ -205,8 +205,8 @@ const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
     hoursShort: "h",
     minutesShort: "min"
   }
-}, W = (s) => s?.locale?.language?.toLowerCase().startsWith("cs") ? "cs" : "en", c = (s, o) => Z[W(s)][o], v = 900 * 1e3, X = 4, V = 60 * 1e3, S = /* @__PURE__ */ new Map(), k = /* @__PURE__ */ new Map(), J = (s) => {
-  const o = s || "__local__", t = S.get(o);
+}, W = (i) => i?.locale?.language?.toLowerCase().startsWith("cs") ? "cs" : "en", c = (i, r) => Z[W(i)][r], v = 900 * 1e3, X = 4, J = 60 * 1e3, S = /* @__PURE__ */ new Map(), C = /* @__PURE__ */ new Map(), V = (i) => {
+  const r = i || "__local__", t = S.get(r);
   if (t)
     return t;
   let e;
@@ -215,7 +215,7 @@ const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
-      ...s ? { timeZone: s } : {}
+      ...i ? { timeZone: i } : {}
     });
   } catch {
     e = new Intl.DateTimeFormat("en-GB-u-hc-h23", {
@@ -224,24 +224,24 @@ const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
       hourCycle: "h23"
     });
   }
-  return S.set(o, e), e;
-}, T = (s, o) => {
-  const t = J(o).formatToParts(s), e = Number(t.find((r) => r.type === "hour")?.value ?? 0), i = Number(
-    t.find((r) => r.type === "minute")?.value ?? 0
+  return S.set(r, e), e;
+}, H = (i, r) => {
+  const t = V(r).formatToParts(i), e = Number(t.find((o) => o.type === "hour")?.value ?? 0), s = Number(
+    t.find((o) => o.type === "minute")?.value ?? 0
   );
-  return { hour: e % 24, minute: i };
-}, Q = (s, o) => {
-  const { hour: t, minute: e } = T(s, o);
+  return { hour: e % 24, minute: s };
+}, Q = (i, r) => {
+  const { hour: t, minute: e } = H(i, r);
   return `${t}:${String(e).padStart(2, "0")}`;
-}, tt = (s, o) => {
-  const t = o || "__local__";
-  let e = k.get(t);
+}, tt = (i, r) => {
+  const t = r || "__local__";
+  let e = C.get(t);
   if (!e) {
     try {
       e = new Intl.DateTimeFormat("en-GB", {
         day: "numeric",
         month: "numeric",
-        ...o ? { timeZone: o } : {}
+        ...r ? { timeZone: r } : {}
       });
     } catch {
       e = new Intl.DateTimeFormat("en-GB", {
@@ -249,41 +249,41 @@ const j = 32, G = 30, B = 32, P = 42, K = 28, L = 50, U = (s) => {
         month: "numeric"
       });
     }
-    k.set(t, e);
+    C.set(t, e);
   }
-  const i = e.formatToParts(s), r = i.find((a) => a.type === "day")?.value, n = i.find((a) => a.type === "month")?.value;
-  return r && n ? `${Number(r)}. ${Number(n)}.` : e.format(s);
-}, H = (s, o, t) => (s - o) / (t - o) * 100;
-function et(s, o, t) {
-  if (!Number.isFinite(s) || !Number.isFinite(o) || o <= s)
+  const s = e.formatToParts(i), o = s.find((a) => a.type === "day")?.value, n = s.find((a) => a.type === "month")?.value;
+  return o && n ? `${Number(o)}. ${Number(n)}.` : e.format(i);
+}, M = (i, r, t) => (i - r) / (t - r) * 100;
+function et(i, r, t) {
+  if (!Number.isFinite(i) || !Number.isFinite(r) || r <= i)
     return [];
-  const e = Math.ceil(s / v) * v, i = [];
-  for (let r = e; r <= o; r += v) {
-    const { hour: n, minute: a } = T(r, t);
-    a !== 0 || n % X !== 0 || i.push({
-      timestamp: r,
-      position: H(r, s, o),
-      label: n === 0 ? tt(r, t) : `${n}:00`
+  const e = Math.ceil(i / v) * v, s = [];
+  for (let o = e; o <= r; o += v) {
+    const { hour: n, minute: a } = H(o, t);
+    a !== 0 || n % X !== 0 || s.push({
+      timestamp: o,
+      position: M(o, i, r),
+      label: n === 0 ? tt(o, t) : `${n}:00`
     });
   }
-  return i;
+  return s;
 }
-function st(s, o, t, e, i = []) {
-  if (t <= o)
+function st(i, r, t, e, s = []) {
+  if (t <= r)
     return [];
-  const r = [];
-  for (let n = 1; n < s.length; n += 1) {
-    const a = s[n - 1], _ = s[n];
-    !a || !_ || a.end !== _.start || a.state === _.state || _.start <= o || _.start >= t || i.some(
-      (f) => Math.abs(f.timestamp - _.start) <= V
-    ) || r.push({
-      timestamp: _.start,
-      position: H(_.start, o, t),
-      label: Q(_.start, e),
-      state: _.state
+  const o = [];
+  for (let n = 1; n < i.length; n += 1) {
+    const a = i[n - 1], u = i[n];
+    !a || !u || a.end !== u.start || a.state === u.state || u.start <= r || u.start >= t || s.some(
+      (f) => Math.abs(f.timestamp - u.start) <= J
+    ) || o.push({
+      timestamp: u.start,
+      position: M(u.start, r, t),
+      label: Q(u.start, e),
+      state: u.state
     });
   }
-  return r;
+  return o;
 }
 const w = `
   :host {
@@ -374,23 +374,29 @@ const w = `
 
   .axis-tick {
     position: absolute;
-    transform: translateX(-50%);
+    width: 0;
     white-space: nowrap;
   }
 
-  .axis-tick.edge-left {
+  .tick-label {
+    position: absolute;
+    left: 0;
+    transform: translateX(-50%);
+  }
+
+  .tick-label.edge-left {
     transform: none;
   }
 
-  .axis-tick.edge-right {
+  .tick-label.edge-right {
     transform: translateX(-100%);
   }
 
   .axis-tick::before {
     position: absolute;
-    left: 50%;
+    left: 0;
     width: 1px;
-    transform: translateX(-50%);
+    transform: translateX(-0.5px);
     background: currentColor;
     content: "";
   }
@@ -494,19 +500,19 @@ class it extends HTMLElement {
   static getStubConfig() {
     return {
       entity: "",
-      hours_to_show: u.hours_to_show
+      hours_to_show: d.hours_to_show
     };
   }
   setConfig(t) {
     const e = this._config ? `${this._config.entity}:${this._config.hours_to_show}` : void 0;
-    this._config = F(t);
-    const i = `${this._config.entity}:${this._config.hours_to_show}`;
-    e !== i && (this._requestGeneration += 1, this._segments = [], this._error = void 0), this._restartRefreshTimer(), this.render(), e !== i && this._queueHistoryLoad();
+    this._config = z(t);
+    const s = `${this._config.entity}:${this._config.hours_to_show}`;
+    e !== s && (this._requestGeneration += 1, this._segments = [], this._error = void 0), this._restartRefreshTimer(), this.render(), e !== s && this._queueHistoryLoad();
   }
   set hass(t) {
-    const e = this._hassSignature(this._hass), i = this._entity()?.last_changed;
+    const e = this._hassSignature(this._hass), s = this._entity()?.last_changed;
     this._hass = t, this._syncConnectionListener();
-    const r = this._config?.entity ? t.states[this._config.entity] : void 0, n = r?.last_changed !== void 0 && r.last_changed !== i;
+    const o = this._config?.entity ? t.states[this._config.entity] : void 0, n = o?.last_changed !== void 0 && o.last_changed !== s;
     e !== this._hassSignature(t) && this.render(), n && this._queueHistoryLoad();
   }
   get hass() {
@@ -571,23 +577,23 @@ class it extends HTMLElement {
       return;
     }
     this._loadInFlight = !0;
-    const t = this._requestGeneration, e = this._config.entity, i = Date.now(), r = i - this._config.hours_to_show * 60 * 60 * 1e3;
+    const t = this._requestGeneration, e = this._config.entity, s = Date.now(), o = s - this._config.hours_to_show * 60 * 60 * 1e3;
     this._loading = !0, this._error = void 0, this.render();
     try {
       const n = await I(
         this._hass,
         e,
-        r,
-        i
+        o,
+        s
       );
       if (t !== this._requestGeneration || e !== this._config?.entity)
         return;
-      this._windowStart = r, this._windowEnd = i;
+      this._windowStart = o, this._windowEnd = s;
       const a = this._hass.states[e];
       this._segments = N(
         D(n, a),
-        r,
-        i
+        o,
+        s
       );
     } catch (n) {
       if (t !== this._requestGeneration)
@@ -614,13 +620,13 @@ class it extends HTMLElement {
     ]);
   }
   _stateLabel(t) {
-    const e = m(t), i = this._config?.state_labels[e];
-    if (i)
-      return i;
-    const r = this._entity();
-    if (r && this._hass?.formatEntityState)
+    const e = m(t), s = this._config?.state_labels[e];
+    if (s)
+      return s;
+    const o = this._entity();
+    if (o && this._hass?.formatEntityState)
       try {
-        return this._hass.formatEntityState({ ...r, state: t });
+        return this._hass.formatEntityState({ ...o, state: t });
       } catch {
       }
     return t;
@@ -642,8 +648,8 @@ class it extends HTMLElement {
     }
   }
   _formatDuration(t) {
-    const e = Math.max(1, Math.round(t / 6e4)), i = Math.floor(e / 60), r = e % 60;
-    return i === 0 ? `${r} ${c(this._hass, "minutesShort")}` : r === 0 ? `${i} ${c(this._hass, "hoursShort")}` : `${i} ${c(this._hass, "hoursShort")} ${r} ${c(this._hass, "minutesShort")}`;
+    const e = Math.max(1, Math.round(t / 6e4)), s = Math.floor(e / 60), o = e % 60;
+    return s === 0 ? `${o} ${c(this._hass, "minutesShort")}` : o === 0 ? `${s} ${c(this._hass, "hoursShort")}` : `${s} ${c(this._hass, "hoursShort")} ${o} ${c(this._hass, "minutesShort")}`;
   }
   _safeColor(t, e) {
     return typeof CSS > "u" || CSS.supports("color", t) ? t : e;
@@ -654,29 +660,29 @@ class it extends HTMLElement {
         t,
         this._windowStart,
         this._windowEnd
-      ), i = this._stateLabel(t.state), r = this._safeColor(
+      ), s = this._stateLabel(t.state), o = this._safeColor(
         $(this._config, t.state),
-        u.fallback_color
-      ), n = `${i}: ${this._formatTime(t.start, !0)}–${this._formatTime(t.end, !0)} · ${c(this._hass, "duration")}: ${this._formatDuration(t.end - t.start)}`, a = e.width >= 7 ? `<span class="segment-label">${l(i)}</span>` : "";
-      return `<div class="segment" style="left:${e.left.toFixed(4)}%;width:${e.width.toFixed(4)}%;background:${d(r)}" title="${d(n)}" aria-label="${d(n)}">${a}</div>`;
+        d.fallback_color
+      ), n = `${s}: ${this._formatTime(t.start, !0)}–${this._formatTime(t.end, !0)} · ${c(this._hass, "duration")}: ${this._formatDuration(t.end - t.start)}`, a = e.width >= 7 ? `<span class="segment-label">${l(s)}</span>` : "";
+      return `<div class="segment" style="left:${e.left.toFixed(4)}%;width:${e.width.toFixed(4)}%;background:${h(o)}" title="${h(n)}" aria-label="${h(n)}">${a}</div>`;
     }).join("");
   }
   _timelineMarkup() {
     if (!this._config?.show_timeline)
       return "";
-    const t = this._windowStart || Date.now() - this._config.hours_to_show * 60 * 60 * 1e3, e = this._windowEnd || Date.now(), i = this._hass?.config.time_zone, r = et(t, e, i), n = st(
+    const t = this._windowStart || Date.now() - this._config.hours_to_show * 60 * 60 * 1e3, e = this._windowEnd || Date.now(), s = this._hass?.config.time_zone, o = et(t, e, s), n = st(
       this._segments,
       t,
       e,
-      i,
-      r
-    ), a = (h) => h < 3 ? " edge-left" : h > 97 ? " edge-right" : "", _ = r.map(
-      (h) => `<span class="axis-tick major-tick${a(h.position)}" style="left:${h.position.toFixed(4)}%">${l(h.label)}</span>`
+      s,
+      o
+    ), a = (_) => _ < 3 ? " edge-left" : _ > 97 ? " edge-right" : "", u = o.map(
+      (_) => `<span class="axis-tick major-tick" style="left:${_.position.toFixed(4)}%"><span class="tick-label${a(_.position)}">${l(_.label)}</span></span>`
     ).join("");
-    return `<div class="timeline" aria-hidden="true">${n.map((h) => {
-      const g = h.state ? this._stateLabel(h.state) : "", y = g ? `${h.label} · ${g}` : h.label;
-      return `<span class="axis-tick change-tick${a(h.position)}" style="left:${h.position.toFixed(4)}%" title="${d(y)}">${l(h.label)}</span>`;
-    }).join("")}${_}</div>`;
+    return `<div class="timeline" aria-hidden="true">${n.map((_) => {
+      const g = _.state ? this._stateLabel(_.state) : "", y = g ? `${_.label} · ${g}` : _.label;
+      return `<span class="axis-tick change-tick" style="left:${_.position.toFixed(4)}%" title="${h(y)}"><span class="tick-label${a(_.position)}">${l(_.label)}</span></span>`;
+    }).join("")}${u}</div>`;
   }
   _legendMarkup() {
     if (!this._config?.show_legend)
@@ -685,17 +691,17 @@ class it extends HTMLElement {
       ...this._entity()?.attributes.options ?? [],
       ...Object.keys(this._config.state_colors),
       ...this._segments.map((n) => n.state)
-    ].map(m), r = [...new Set(e)].map((n) => {
+    ].map(m), o = [...new Set(e)].map((n) => {
       const a = this._safeColor(
         $(this._config, n),
-        u.fallback_color
+        d.fallback_color
       );
-      return `<span class="legend-item"><span class="swatch" style="background:${d(a)}"></span>${l(this._stateLabel(n))}</span>`;
+      return `<span class="legend-item"><span class="swatch" style="background:${h(a)}"></span>${l(this._stateLabel(n))}</span>`;
     }).join("");
-    return r ? `<div class="legend">${r}</div>` : "";
+    return o ? `<div class="legend">${o}</div>` : "";
   }
   _statusMarkup() {
-    return this._error ? `<div class="status error" title="${d(this._error)}">${l(c(this._hass, "loadError"))}<button id="retry" type="button">${l(c(this._hass, "retry"))}</button></div>` : this._loading && this._segments.length === 0 ? `<div class="status">${l(c(this._hass, "loading"))}</div>` : this._segments.length === 0 ? `<div class="empty">${l(c(this._hass, "noHistory"))} ${l(c(this._hass, "recorderHint"))}</div>` : "";
+    return this._error ? `<div class="status error" title="${h(this._error)}">${l(c(this._hass, "loadError"))}<button id="retry" type="button">${l(c(this._hass, "retry"))}</button></div>` : this._loading && this._segments.length === 0 ? `<div class="status">${l(c(this._hass, "loading"))}</div>` : this._segments.length === 0 ? `<div class="empty">${l(c(this._hass, "noHistory"))} ${l(c(this._hass, "recorderHint"))}</div>` : "";
   }
   _openMoreInfo() {
     this._config?.entity && this.dispatchEvent(
@@ -717,15 +723,15 @@ class it extends HTMLElement {
       this.shadowRoot.innerHTML = `<style>${w}</style><ha-card><div class="empty">${l(c(this._hass, "noEntity"))}</div></ha-card>`;
       return;
     }
-    const t = this._entity(), e = this._config.name || (typeof t?.attributes.friendly_name == "string" ? t.attributes.friendly_name : this._config.entity), i = this._config.show_current_state && t ? `<span class="current-state">${l(this._stateLabel(t.state))}</span>` : "", r = this._config.show_name ? `<span class="title">${l(e)}</span>` : "", n = r || i ? `<div class="header interactive${r ? "" : " state-only"}" id="more-info" role="button" tabindex="0">${r}${i}</div>` : "", a = this._safeColor(
+    const t = this._entity(), e = this._config.name || (typeof t?.attributes.friendly_name == "string" ? t.attributes.friendly_name : this._config.entity), s = this._config.show_current_state && t ? `<span class="current-state">${l(this._stateLabel(t.state))}</span>` : "", o = this._config.show_name ? `<span class="title">${l(e)}</span>` : "", n = o || s ? `<div class="header interactive${o ? "" : " state-only"}" id="more-info" role="button" tabindex="0">${o}${s}</div>` : "", a = this._safeColor(
       this._config.no_data_color,
-      u.no_data_color
-    ), _ = `${e}, ${this._config.hours_to_show} ${c(this._hass, "hoursShort")}`;
+      d.no_data_color
+    ), u = `${e}, ${this._config.hours_to_show} ${c(this._hass, "hoursShort")}`;
     this.shadowRoot.innerHTML = `
       <style>${w}</style>
       <ha-card>
         ${n}
-        <div class="bar interactive" id="history-bar" role="img" tabindex="0" aria-label="${d(_)}" style="background-color:${d(a)};background-image:repeating-linear-gradient(135deg, transparent 0, transparent 4px, rgba(127,127,127,.12) 4px, rgba(127,127,127,.12) 8px)">
+        <div class="bar interactive" id="history-bar" role="img" tabindex="0" aria-label="${h(u)}" style="background-color:${h(a)};background-image:repeating-linear-gradient(135deg, transparent 0, transparent 4px, rgba(127,127,127,.12) 4px, rgba(127,127,127,.12) 8px)">
           ${this._segmentsMarkup()}
         </div>
         ${this._timelineMarkup()}
@@ -736,8 +742,8 @@ class it extends HTMLElement {
     for (const f of this.shadowRoot.querySelectorAll(
       "#more-info, #history-bar"
     ))
-      f.addEventListener("click", () => this._openMoreInfo()), f.addEventListener("keydown", (h) => {
-        (h.key === "Enter" || h.key === " ") && (h.preventDefault(), this._openMoreInfo());
+      f.addEventListener("click", () => this._openMoreInfo()), f.addEventListener("keydown", (_) => {
+        (_.key === "Enter" || _.key === " ") && (_.preventDefault(), this._openMoreInfo());
       });
   }
 }
@@ -825,6 +831,12 @@ const ot = `
     cursor: pointer;
   }
 
+  .color-input {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 8px;
+  }
+
   .reset {
     min-height: 36px;
     padding: 0 8px;
@@ -875,36 +887,46 @@ class rt extends HTMLElement {
   set hass(t) {
     const e = this._hass?.locale.language;
     this._hass = t;
-    const i = this._entityOptions().join("|");
-    (!this.shadowRoot?.hasChildNodes() || i !== this._optionsSignature || e !== t.locale.language) && (this._optionsSignature = i, this.render());
+    const s = this._entityOptions().join("|");
+    (!this.shadowRoot?.hasChildNodes() || s !== this._optionsSignature || e !== t.locale.language) && (this._optionsSignature = s, this.render());
   }
   get hass() {
     return this._hass;
   }
   setConfig(t) {
     const e = Object.fromEntries(
-      Object.entries(t.state_colors ?? {}).map(([r, n]) => [
-        m(r),
-        n
+      Object.entries(t.state_colors ?? {}).map(([n, a]) => [
+        m(n),
+        a
       ])
-    ), i = Object.fromEntries(
-      Object.entries(t.state_labels ?? {}).map(([r, n]) => [
-        m(r),
-        n
+    ), s = Object.fromEntries(
+      Object.entries(t.state_labels ?? {}).map(([n, a]) => [
+        m(n),
+        a
       ])
-    );
-    this._config = {
+    ), o = {
       ...t,
       entity: t.entity ?? "",
       state_colors: e,
-      state_labels: i
-    }, this._optionsSignature = this._entityOptions().join("|"), this.render();
+      state_labels: s
+    };
+    this._configSignature(o) !== this._configSignature(this._config) && (this._config = o, this._optionsSignature = this._entityOptions().join("|"), this.render());
   }
   connectedCallback() {
     this.render();
   }
   _entity() {
     return this._config.entity ? this._hass?.states[this._config.entity] : void 0;
+  }
+  _configSignature(t) {
+    const e = (a) => Object.entries(a ?? {}).sort(
+      ([u], [f]) => u.localeCompare(f)
+    ), { state_colors: s, state_labels: o, ...n } = t;
+    return JSON.stringify({
+      ...n,
+      state_colors: e(s),
+      state_labels: e(o)
+    });
   }
   _entityOptions() {
     const t = this._entity()?.attributes.options;
@@ -913,23 +935,23 @@ class rt extends HTMLElement {
   _editableStates() {
     const t = this._entityOptions().map(m), e = Object.keys(this._config.state_colors ?? {}).map(
       m
-    ), i = t.length > 0 ? t : [...R];
-    return [.../* @__PURE__ */ new Set([...i, ...e, "unknown", "unavailable"])];
+    ), s = t.length > 0 ? t : [...F];
+    return [.../* @__PURE__ */ new Set([...s, ...e, "unknown", "unavailable"])];
   }
   _stateLabel(t) {
     const e = this._config.state_labels?.[t];
     if (e)
       return e;
-    const i = this._entity();
-    if (i && this._hass?.formatEntityState)
+    const s = this._entity();
+    if (s && this._hass?.formatEntityState)
       try {
-        return this._hass.formatEntityState({ ...i, state: t });
+        return this._hass.formatEntityState({ ...s, state: t });
       } catch {
       }
     return t;
   }
   _effectiveColor(t) {
-    return this._config.state_colors?.[t] ?? E[t] ?? this._config.fallback_color ?? u.fallback_color;
+    return this._config.state_colors?.[t] ?? L[t] ?? this._config.fallback_color ?? d.fallback_color;
   }
   _entityListMarkup() {
     return this._hass ? Object.values(this._hass.states).filter(
@@ -938,21 +960,21 @@ class rt extends HTMLElement {
       (t, e) => t.entity_id.localeCompare(e.entity_id)
     ).map((t) => {
       const e = typeof t.attributes.friendly_name == "string" ? t.attributes.friendly_name : t.entity_id;
-      return `<option value="${d(t.entity_id)}">${l(e)}</option>`;
+      return `<option value="${h(t.entity_id)}">${l(e)}</option>`;
     }).join("") : "";
   }
   _colorsMarkup() {
     return this._editableStates().map((t) => {
-      const e = this._effectiveColor(t), i = z(e) ? e : u.fallback_color;
+      const e = this._effectiveColor(t), s = k(e) ? e : d.fallback_color;
       return `
           <div class="color-row">
             <span class="state-name">
               ${l(this._stateLabel(t))}
               <span class="raw-state">${l(t)}</span>
             </span>
-            <input class="state-color-picker" type="color" data-state="${d(t)}" value="${d(i)}" aria-label="${d(this._stateLabel(t))}">
-            <input class="state-color-text" type="text" data-state="${d(t)}" value="${d(e)}" aria-label="${d(`${this._stateLabel(t)} color`)}">
-            <button class="reset" type="button" data-reset-state="${d(t)}">${l(c(this._hass, "reset"))}</button>
+            <input class="state-color-picker" type="color" data-state="${h(t)}" value="${h(s)}" aria-label="${h(this._stateLabel(t))}">
+            <input class="state-color-text" type="text" data-state="${h(t)}" value="${h(e)}" aria-label="${h(`${this._stateLabel(t)} color`)}">
+            <button class="reset" type="button" data-reset-state="${h(t)}">${l(c(this._hass, "reset"))}</button>
           </div>
         `;
     }).join("");
@@ -967,14 +989,14 @@ class rt extends HTMLElement {
     );
   }
   _updateField(t, e) {
-    const i = { ...this._config, [t]: e };
-    (e === "" || e === void 0) && (delete i[t], t === "entity" && (i.entity = "")), this._emitConfig(i);
+    const s = { ...this._config, [t]: e };
+    (e === "" || e === void 0) && (delete s[t], t === "entity" && (s.entity = "")), this._emitConfig(s);
   }
   _updateStateColor(t, e) {
-    const i = { ...this._config.state_colors ?? {} };
-    e?.trim() ? i[t] = e.trim() : delete i[t];
-    const r = { ...this._config };
-    Object.keys(i).length > 0 ? r.state_colors = i : delete r.state_colors, this._emitConfig(r);
+    const s = { ...this._config.state_colors ?? {} };
+    e?.trim() ? s[t] = e.trim() : delete s[t];
+    const o = { ...this._config };
+    Object.keys(s).length > 0 ? o.state_colors = s : delete o.state_colors, this._emitConfig(o);
   }
   _bindEvents() {
     const t = this.shadowRoot;
@@ -989,19 +1011,19 @@ class rt extends HTMLElement {
         (e) => this._updateField("name", e.target.value)
       );
       for (const e of ["hours_to_show", "refresh_interval"])
-        t.querySelector(`#${e}`)?.addEventListener("change", (i) => {
-          const r = i.target;
-          if (r.value.trim() === "") {
+        t.querySelector(`#${e}`)?.addEventListener("change", (s) => {
+          const o = s.target;
+          if (o.value.trim() === "") {
             this._updateField(e, void 0), this.render();
             return;
           }
-          const n = Number(r.value);
+          const n = Number(o.value);
           if (!Number.isFinite(n)) {
             this.render();
             return;
           }
           const f = Math.min(e === "hours_to_show" ? 720 : 3600, Math.max(e === "hours_to_show" ? 0.25 : 15, n));
-          r.value = String(f), this._updateField(e, f);
+          o.value = String(f), this._updateField(e, f);
         });
       for (const e of [
         "fallback_color",
@@ -1009,9 +1031,9 @@ class rt extends HTMLElement {
       ])
         t.querySelector(`#${e}`)?.addEventListener(
           "change",
-          (i) => this._updateField(
+          (s) => this._updateField(
             e,
-            i.target.value
+            s.target.value
           )
         );
       for (const e of [
@@ -1022,60 +1044,74 @@ class rt extends HTMLElement {
       ])
         t.querySelector(`#${e}`)?.addEventListener(
           "change",
-          (i) => this._updateField(e, i.target.checked)
+          (s) => this._updateField(e, s.target.checked)
         );
       for (const e of t.querySelectorAll(
         ".state-color-picker"
       ))
         e.addEventListener("input", () => {
-          const i = e.dataset.state;
-          if (i) {
-            this._updateStateColor(i, e.value);
-            const r = t.querySelector(
-              `.state-color-text[data-state="${CSS.escape(i)}"]`
+          const s = e.dataset.state;
+          if (s) {
+            this._updateStateColor(s, e.value);
+            const o = t.querySelector(
+              `.state-color-text[data-state="${CSS.escape(s)}"]`
             );
-            r && (r.value = e.value);
+            o && (o.value = e.value);
+          }
+        });
+      for (const e of t.querySelectorAll(
+        ".config-color-picker"
+      ))
+        e.addEventListener("input", () => {
+          const s = e.dataset.colorField;
+          if (s) {
+            this._updateField(s, e.value);
+            const o = t.querySelector(`#${s}`);
+            o && (o.value = e.value);
           }
         });
       for (const e of t.querySelectorAll(
         ".state-color-text"
       ))
         e.addEventListener("input", () => {
-          const i = e.dataset.state;
-          i && this._updateStateColor(i, e.value);
+          const s = e.dataset.state;
+          s && this._updateStateColor(s, e.value);
         });
       for (const e of t.querySelectorAll(
         "[data-reset-state]"
       ))
         e.addEventListener("click", () => {
-          const i = e.dataset.resetState;
-          i && (this._updateStateColor(i), this.render());
+          const s = e.dataset.resetState;
+          s && (this._updateStateColor(s), this.render());
         });
     }
   }
   render() {
-    this.shadowRoot && (this.shadowRoot.innerHTML = `
+    if (!this.shadowRoot)
+      return;
+    const t = this._config.fallback_color ?? d.fallback_color, e = this._config.no_data_color ?? d.no_data_color, s = (o) => k(o) ? o : d.fallback_color;
+    this.shadowRoot.innerHTML = `
       <style>${ot}</style>
       <div class="editor">
         <div class="field">
           <label for="entity">${l(c(this._hass, "entity"))}</label>
-          <input id="entity" type="text" list="enum-entities" value="${d(this._config.entity ?? "")}" placeholder="sensor.netatmo_health_index">
+          <input id="entity" type="text" list="enum-entities" value="${h(this._config.entity ?? "")}" placeholder="sensor.netatmo_health_index">
           <datalist id="enum-entities">${this._entityListMarkup()}</datalist>
         </div>
 
         <div class="field">
           <label for="name">${l(c(this._hass, "name"))}</label>
-          <input id="name" type="text" value="${d(this._config.name ?? "")}">
+          <input id="name" type="text" value="${h(this._config.name ?? "")}">
         </div>
 
         <div class="grid">
           <div class="field">
             <label for="hours_to_show">${l(c(this._hass, "hours"))}</label>
-            <input id="hours_to_show" type="number" min="0.25" max="720" step="0.25" value="${d(this._config.hours_to_show ?? u.hours_to_show)}">
+            <input id="hours_to_show" type="number" min="0.25" max="720" step="0.25" value="${h(this._config.hours_to_show ?? d.hours_to_show)}">
           </div>
           <div class="field">
             <label for="refresh_interval">${l(c(this._hass, "refresh"))}</label>
-            <input id="refresh_interval" type="number" min="15" max="3600" step="1" value="${d(this._config.refresh_interval ?? u.refresh_interval)}">
+            <input id="refresh_interval" type="number" min="15" max="3600" step="1" value="${h(this._config.refresh_interval ?? d.refresh_interval)}">
           </div>
         </div>
 
@@ -1085,39 +1121,45 @@ class rt extends HTMLElement {
         <div class="grid">
           <div class="field">
             <label for="fallback_color">${l(c(this._hass, "fallback"))}</label>
-            <input id="fallback_color" type="text" value="${d(this._config.fallback_color ?? u.fallback_color)}">
+            <div class="color-input">
+              <input class="config-color-picker" type="color" data-color-field="fallback_color" value="${h(s(t))}" aria-label="${h(`${c(this._hass, "fallback")} picker`)}">
+              <input id="fallback_color" type="text" value="${h(t)}">
+            </div>
           </div>
           <div class="field">
             <label for="no_data_color">${l(c(this._hass, "noDataColor"))}</label>
-            <input id="no_data_color" type="text" value="${d(this._config.no_data_color ?? u.no_data_color)}">
+            <div class="color-input">
+              <input class="config-color-picker" type="color" data-color-field="no_data_color" value="${h(s(e))}" aria-label="${h(`${c(this._hass, "noDataColor")} picker`)}">
+              <input id="no_data_color" type="text" value="${h(e)}">
+            </div>
           </div>
         </div>
 
         <div class="toggles">
-          <label class="toggle"><input id="show_name" type="checkbox" ${this._config.show_name ?? u.show_name ? "checked" : ""}>${l(c(this._hass, "showName"))}</label>
-          <label class="toggle"><input id="show_legend" type="checkbox" ${this._config.show_legend ?? u.show_legend ? "checked" : ""}>${l(c(this._hass, "showLegend"))}</label>
-          <label class="toggle"><input id="show_current_state" type="checkbox" ${this._config.show_current_state ?? u.show_current_state ? "checked" : ""}>${l(c(this._hass, "showCurrentState"))}</label>
-          <label class="toggle"><input id="show_timeline" type="checkbox" ${this._config.show_timeline ?? u.show_timeline ? "checked" : ""}>${l(c(this._hass, "showTimeline"))}</label>
+          <label class="toggle"><input id="show_name" type="checkbox" ${this._config.show_name ?? d.show_name ? "checked" : ""}>${l(c(this._hass, "showName"))}</label>
+          <label class="toggle"><input id="show_legend" type="checkbox" ${this._config.show_legend ?? d.show_legend ? "checked" : ""}>${l(c(this._hass, "showLegend"))}</label>
+          <label class="toggle"><input id="show_current_state" type="checkbox" ${this._config.show_current_state ?? d.show_current_state ? "checked" : ""}>${l(c(this._hass, "showCurrentState"))}</label>
+          <label class="toggle"><input id="show_timeline" type="checkbox" ${this._config.show_timeline ?? d.show_timeline ? "checked" : ""}>${l(c(this._hass, "showTimeline"))}</label>
         </div>
       </div>
-    `, this._bindEvents());
+    `, this._bindEvents();
   }
 }
-const b = "custom-history-bar", C = "custom-history-bar-editor";
-customElements.get(C) || customElements.define(C, rt);
+const b = "custom-history-bar", E = "custom-history-bar-editor";
+customElements.get(E) || customElements.define(E, rt);
 customElements.get(b) || customElements.define(b, it);
 window.customCards = window.customCards ?? [];
-window.customCards.some((s) => s.type === b) || window.customCards.push({
+window.customCards.some((i) => i.type === b) || window.customCards.push({
   type: b,
   name: "Custom History Bar",
   description: "A configurable colored history bar for enum entities",
   preview: !0,
-  getEntitySuggestion: (s, o) => {
-    const t = s.states[o];
+  getEntitySuggestion: (i, r) => {
+    const t = i.states[r];
     return t && Array.isArray(t.attributes.options) ? {
       config: {
         type: `custom:${b}`,
-        entity: o
+        entity: r
       }
     } : null;
   }

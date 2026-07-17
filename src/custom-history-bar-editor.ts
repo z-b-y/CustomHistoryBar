@@ -96,6 +96,12 @@ const EDITOR_STYLE = `
     cursor: pointer;
   }
 
+  .color-input {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 8px;
+  }
+
   .reset {
     min-height: 36px;
     padding: 0 8px;
@@ -177,12 +183,16 @@ export class CustomHistoryBarEditor extends HTMLElement {
         label,
       ]),
     );
-    this._config = {
+    const nextConfig = {
       ...config,
       entity: config.entity ?? "",
       state_colors: normalizedColors,
       state_labels: normalizedLabels,
     };
+    if (this._configSignature(nextConfig) === this._configSignature(this._config)) {
+      return;
+    }
+    this._config = nextConfig;
     this._optionsSignature = this._entityOptions().join("|");
     this.render();
   }
@@ -195,6 +205,19 @@ export class CustomHistoryBarEditor extends HTMLElement {
     return this._config.entity
       ? this._hass?.states[this._config.entity]
       : undefined;
+  }
+
+  private _configSignature(config: HistoryBarConfig): string {
+    const sortedMap = (map: Record<string, string> | undefined) =>
+      Object.entries(map ?? {}).sort(([first], [second]) =>
+        first.localeCompare(second),
+      );
+    const { state_colors, state_labels, ...rest } = config;
+    return JSON.stringify({
+      ...rest,
+      state_colors: sortedMap(state_colors),
+      state_labels: sortedMap(state_labels),
+    });
   }
 
   private _entityOptions(): string[] {
@@ -412,6 +435,24 @@ export class CustomHistoryBarEditor extends HTMLElement {
     }
 
     for (const input of root.querySelectorAll<HTMLInputElement>(
+      ".config-color-picker",
+    )) {
+      input.addEventListener("input", () => {
+        const field = input.dataset.colorField as
+          | "fallback_color"
+          | "no_data_color"
+          | undefined;
+        if (field) {
+          this._updateField(field, input.value);
+          const textInput = root.querySelector<HTMLInputElement>(`#${field}`);
+          if (textInput) {
+            textInput.value = input.value;
+          }
+        }
+      });
+    }
+
+    for (const input of root.querySelectorAll<HTMLInputElement>(
       ".state-color-text",
     )) {
       input.addEventListener("input", () => {
@@ -439,6 +480,12 @@ export class CustomHistoryBarEditor extends HTMLElement {
     if (!this.shadowRoot) {
       return;
     }
+
+    const fallbackColor =
+      this._config.fallback_color ?? DEFAULT_CONFIG.fallback_color;
+    const noDataColor = this._config.no_data_color ?? DEFAULT_CONFIG.no_data_color;
+    const pickerColor = (color: string): string =>
+      isHexColor(color) ? color : DEFAULT_CONFIG.fallback_color;
 
     this.shadowRoot.innerHTML = `
       <style>${EDITOR_STYLE}</style>
@@ -471,11 +518,17 @@ export class CustomHistoryBarEditor extends HTMLElement {
         <div class="grid">
           <div class="field">
             <label for="fallback_color">${escapeHtml(localize(this._hass, "fallback"))}</label>
-            <input id="fallback_color" type="text" value="${escapeAttribute(this._config.fallback_color ?? DEFAULT_CONFIG.fallback_color)}">
+            <div class="color-input">
+              <input class="config-color-picker" type="color" data-color-field="fallback_color" value="${escapeAttribute(pickerColor(fallbackColor))}" aria-label="${escapeAttribute(`${localize(this._hass, "fallback")} picker`)}">
+              <input id="fallback_color" type="text" value="${escapeAttribute(fallbackColor)}">
+            </div>
           </div>
           <div class="field">
             <label for="no_data_color">${escapeHtml(localize(this._hass, "noDataColor"))}</label>
-            <input id="no_data_color" type="text" value="${escapeAttribute(this._config.no_data_color ?? DEFAULT_CONFIG.no_data_color)}">
+            <div class="color-input">
+              <input class="config-color-picker" type="color" data-color-field="no_data_color" value="${escapeAttribute(pickerColor(noDataColor))}" aria-label="${escapeAttribute(`${localize(this._hass, "noDataColor")} picker`)}">
+              <input id="no_data_color" type="text" value="${escapeAttribute(noDataColor)}">
+            </div>
           </div>
         </div>
 
