@@ -1,9 +1,10 @@
 name: Build a testy
 
-on:
+# on:
 #   push:
 #   pull_request:
-#   workflow_dispatch:
+  # Workflow se spouští pouze ručně z karty Actions na GitHubu.
+  workflow_dispatch:
 
 permissions:
   contents: read

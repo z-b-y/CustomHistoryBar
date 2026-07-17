@@ -1,5 +1,15 @@
 # Plán práce
 
+## Ruční spouštění GitHub Actions
+
+- [x] Zachovat původní automatické spouštěče workflow jako komentované.
+- [x] Povolit ruční spuštění `workflow_dispatch` pro validaci HACS i build.
+- [x] Ověřit syntaxi obou workflow.
+
+### Kontrola ručního spouštění
+
+- Oba workflow mají jako jediný aktivní spouštěč `workflow_dispatch`; GitHub je nespustí při pushi, pull requestu ani podle plánu.
+
 - [x] Ověřit aktuální rozhraní Home Assistantu pro načtení historie, registraci vlastní karty a vizuální editor.
 - [x] Navrhnout veřejnou YAML konfiguraci včetně výchozích barev pro stavy `healthy`, `fine`, `fair`, `poor` a `unhealthy`.
 - [x] Založit minimální TypeScript projekt kompatibilní s HACS jako Lovelace plugin.
